@@ -1,10 +1,14 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, StatusBar } from "react-native";
 import { useQuery } from "@tanstack/react-query";
-import { fetchAccessToken } from "../requests/AccessToken";
+import Constants from "expo-constants";
+
+import { getAccessToken } from "../requests/AccessToken";
+import { TokenContext } from "../contexts/TokenContext";
+import Home from "./Home";
 
 const styles = StyleSheet.create({
 	container: {
+		marginTop: Constants.statusBarHeight,
 		flex: 1,
 		backgroundColor: "#fff",
 		alignItems: "center",
@@ -13,17 +17,18 @@ const styles = StyleSheet.create({
 });
 
 const Main = () => {
-	const { isPending, isError, data, error } = useQuery({
-		queryKey: [],
-		queryFn: fetchAccessToken,
+	const {
+		isPending,
+		isError,
+		data: token,
+		error,
+	} = useQuery({
+		queryKey: ["accessToken"],
+		queryFn: getAccessToken,
 	});
 
 	if (isPending) {
-		return (
-			<View style={styles.container}>
-				<Text>Loading</Text>
-			</View>
-		);
+		return <View style={styles.container}></View>;
 	}
 
 	if (isError) {
@@ -33,12 +38,12 @@ const Main = () => {
 			</View>
 		);
 	}
-	console.log(data);
+
 	return (
-		<View style={styles.container}>
-			<Text>{data}</Text>
-			<StatusBar style="auto" />
-		</View>
+		<TokenContext.Provider value={token}>
+			<StatusBar />
+			<Home />
+		</TokenContext.Provider>
 	);
 };
 

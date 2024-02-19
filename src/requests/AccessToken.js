@@ -4,7 +4,7 @@ import { encode } from "base-64";
 
 const tokenURL = "https://www.reddit.com/api/v1/access_token";
 
-export const fetchAccessToken = async () => {
+export const getAccessToken = async () => {
 	const credentials = encode(`${Constants.expoConfig.extra.clientID}:`);
 
 	const fields = {
@@ -21,10 +21,8 @@ export const fetchAccessToken = async () => {
 
 	try {
 		const response = await axios.post(tokenURL, fields, config);
-		console.log(response.data);
 		return response.data.access_token;
 	} catch (error) {
-		console.log(error.response);
-		return error.response;
+		throw new Error("Access Token could not be fetched");
 	}
 };
