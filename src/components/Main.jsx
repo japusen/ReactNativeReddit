@@ -1,10 +1,11 @@
 import { StyleSheet, Text, View, StatusBar } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import Constants from "expo-constants";
+import { NavigationContainer } from "@react-navigation/native";
 
 import { getAccessToken } from "../requests/AccessToken";
 import { TokenContext } from "../contexts/TokenContext";
-import Home from "./Home";
+import MyDrawer from "./MyDrawer";
 
 const styles = StyleSheet.create({
 	container: {
@@ -42,7 +43,9 @@ const Main = () => {
 	return (
 		<TokenContext.Provider value={token}>
 			<StatusBar />
-			<Home />
+			<NavigationContainer>
+				<MyDrawer />
+			</NavigationContainer>
 		</TokenContext.Provider>
 	);
 };

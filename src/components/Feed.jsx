@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import { useQuery } from "@tanstack/react-query";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { ActivityIndicator, Surface, Appbar, Text } from "react-native-paper";
 
 import { TokenContext } from "../contexts/TokenContext";
@@ -36,12 +36,21 @@ const TopAppBar = ({ subreddit, onSortChange, onTopSortChange }) => {
 	);
 };
 
-const Home = () => {
+const Feed = ({ navigation }) => {
 	const token = useContext(TokenContext);
 
 	const [subreddit, setSubreddit] = useState("all");
 	const [sort, setSort] = useState("hot");
 	const [topSort, setTopSort] = useState(null);
+
+	useEffect(() => {
+		navigation.setOptions({
+			title: subreddit,
+			headerRight: () => (
+				<SortMenu onSortChange={setSort} onTopSortChange={setTopSort} />
+			),
+		});
+	}, [navigation, subreddit]);
 
 	const { isPending, isError, data, error } = useQuery({
 		queryKey: ["getSubredditListing", subreddit, sort, topSort],
@@ -68,15 +77,9 @@ const Home = () => {
 
 	return (
 		<Surface style={styles.container}>
-			<TopAppBar
-				subreddit={subreddit}
-				onSortChange={setSort}
-				onTopSortChange={setTopSort}
-			/>
-
 			<PostListing posts={posts} />
 		</Surface>
 	);
 };
 
-export default Home;
+export default Feed;
