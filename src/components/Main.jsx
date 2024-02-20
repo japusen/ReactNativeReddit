@@ -1,4 +1,6 @@
-import { StyleSheet, Text, View, StatusBar } from "react-native";
+import { StyleSheet, View, StatusBar } from "react-native";
+import { Text } from "react-native-paper";
+
 import { useQuery } from "@tanstack/react-query";
 import Constants from "expo-constants";
 import { NavigationContainer } from "@react-navigation/native";

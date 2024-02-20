@@ -1,12 +1,18 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { View } from "react-native";
 import { Appbar, Menu, Divider } from "react-native-paper";
+import { FeedContext } from "../contexts/FeedContext";
 
-const SortMenu = ({ onSortChange, onTopSortChange }) => {
+const SortMenu = () => {
+	const { setSort, setTopSort } = useContext(FeedContext);
+
 	const [visible, setVisible] = useState(false);
 	const [subMenuVisible, setSubMenuVisible] = useState(false);
 
 	const openMenu = () => setVisible(true);
+
 	const openSubMenu = () => setSubMenuVisible(true);
+
 	const closeMenu = () => {
 		setVisible(false);
 		setSubMenuVisible(false);
@@ -20,120 +26,80 @@ const SortMenu = ({ onSortChange, onTopSortChange }) => {
 		>
 			{visible && !subMenuVisible && (
 				<SortItems
-					onSortChange={onSortChange}
-					onTopSortChange={() => onTopSortChange(null)}
 					openSubMenu={openSubMenu}
 					closeMenu={closeMenu}
+					setSort={setSort}
+					setTopSort={setTopSort}
 				/>
 			)}
 			{visible && subMenuVisible && (
 				<TopSortItems
-					onSortChange={() => onSortChange("top")}
-					onTopSortChange={onTopSortChange}
 					closeMenu={closeMenu}
+					setSort={setSort}
+					setTopSort={setTopSort}
 				/>
 			)}
 		</Menu>
 	);
 };
 
-const SortItems = ({
-	onSortChange,
-	onTopSortChange,
-	openSubMenu,
-	closeMenu,
-}) => {
+const sorts = [
+	{ name: "hot", title: "Hot", icon: "fire" },
+	{ name: "new", title: "New", icon: "new-box" },
+	{ name: "rising", title: "Rising", icon: "chart-line-variant" },
+	{ name: "top", title: "Top", icon: "arrow-up-bold-hexagon-outline" },
+];
+
+const SortItems = ({ openSubMenu, closeMenu, setSort, setTopSort }) => {
 	const onItemPress = (newSort) => {
-		onSortChange(newSort);
-		onTopSortChange();
+		setSort(newSort);
+		setTopSort(null);
 		closeMenu();
 	};
 
 	return (
 		<>
-			<Menu.Item
-				leadingIcon="fire"
-				onPress={() => {
-					onItemPress("hot");
-				}}
-				title="Hot"
-			/>
-			<Divider />
-			<Menu.Item
-				leadingIcon="new-box"
-				onPress={() => {
-					onItemPress("new");
-				}}
-				title="New"
-			/>
-			<Divider />
-			<Menu.Item
-				leadingIcon="chart-line-variant"
-				onPress={() => {
-					onItemPress("rising");
-				}}
-				title="Rising"
-			/>
-			<Divider />
-			<Menu.Item
-				leadingIcon="arrow-up-bold-hexagon-outline"
-				onPress={openSubMenu}
-				title="Top"
-			/>
+			{sorts.map((sort) => (
+				<View key={sort.name}>
+					<Menu.Item
+						leadingIcon={sort.icon}
+						onPress={() => {
+							sort.name === "top"
+								? openSubMenu()
+								: onItemPress(sort.name);
+						}}
+						title={sort.title}
+					/>
+					{sort !== sorts[sorts.length - 1] && <Divider />}
+				</View>
+			))}
 		</>
 	);
 };
 
-const TopSortItems = ({ onSortChange, onTopSortChange, closeMenu }) => {
+const topSorts = ["hour", "day", "week", "month", "year", "all"];
+
+const TopSortItems = ({ closeMenu, setSort, setTopSort }) => {
 	const onItemPress = (topSort) => {
-		onSortChange();
-		onTopSortChange(topSort);
+		setSort("top");
+		setTopSort(topSort);
 		closeMenu();
 	};
 
 	return (
 		<>
-			<Menu.Item
-				onPress={() => {
-					onItemPress("hour");
-				}}
-				title="hour"
-			/>
-			<Divider />
-			<Menu.Item
-				onPress={() => {
-					onItemPress("day");
-				}}
-				title="day"
-			/>
-			<Divider />
-			<Menu.Item
-				onPress={() => {
-					onItemPress("week");
-				}}
-				title="week"
-			/>
-			<Divider />
-			<Menu.Item
-				onPress={() => {
-					onItemPress("month");
-				}}
-				title="month"
-			/>
-			<Divider />
-			<Menu.Item
-				onPress={() => {
-					onItemPress("y");
-				}}
-				title="year"
-			/>
-			<Divider />
-			<Menu.Item
-				onPress={() => {
-					onItemPress("all");
-				}}
-				title="all"
-			/>
+			{topSorts.map((sort) => (
+				<View key={sort}>
+					<Menu.Item
+						key={sort}
+						onPress={() => {
+							onItemPress(sort === "year" ? "y" : sort);
+						}}
+						title={sort}
+					/>
+					{sort !== topSorts[topSorts.length - 1] && <Divider />}
+				</View>
+			))}
 		</>
 	);
 };
