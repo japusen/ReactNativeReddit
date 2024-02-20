@@ -76,7 +76,7 @@ const SortItems = ({
 			/>
 			<Divider />
 			<Menu.Item
-				leadingIcon="chart-line-variant"
+				leadingIcon="arrow-up-bold-hexagon-outline"
 				onPress={openSubMenu}
 				title="Top"
 			/>

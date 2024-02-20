@@ -1,13 +1,12 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { useContext, useState } from "react";
-import { FlatList } from "react-native";
 import { ActivityIndicator, Surface, Appbar, Text } from "react-native-paper";
 
 import { TokenContext } from "../contexts/TokenContext";
 import { getSubreddit } from "../requests/Subreddit";
-import PostPreview from "./PostPreview";
 import SortMenu from "./SortMenu";
+import PostListing from "./PostListing";
 
 const styles = StyleSheet.create({
 	container: {
@@ -22,12 +21,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 	},
-	separator: {
-		marginTop: 10,
-	},
 });
-
-const ItemSeparator = () => <View style={styles.separator} />;
 
 const TopAppBar = ({ subreddit, onSortChange, onTopSortChange }) => {
 	return (
@@ -79,22 +73,8 @@ const Home = () => {
 				onSortChange={setSort}
 				onTopSortChange={setTopSort}
 			/>
-			{posts.length == 0 ? (
-				<View style={styles.containerCentered}>
-					<Text>There appears to be nothing here</Text>
-				</View>
-			) : (
-				<FlatList
-					data={posts}
-					//onEndReached={onEndReach}
-					ItemSeparatorComponent={ItemSeparator}
-					renderItem={({ item }) => <PostPreview item={item} />}
-					keyExtractor={(item) => item.id}
-					//ListHeaderComponent={header}
-					//extraData={extraData}
-					//style={{ padding: 5 }}
-				/>
-			)}
+
+			<PostListing posts={posts} />
 		</Surface>
 	);
 };
