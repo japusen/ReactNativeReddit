@@ -7,7 +7,7 @@ import { NavigationContainer } from "@react-navigation/native";
 
 import { getAccessToken } from "../requests/AccessToken";
 import { TokenContext } from "../contexts/TokenContext";
-import MyDrawer from "./MyDrawer";
+import DrawerNav from "./DrawerNav";
 
 const styles = StyleSheet.create({
 	container: {
@@ -46,7 +46,7 @@ const Main = () => {
 		<TokenContext.Provider value={token}>
 			<StatusBar />
 			<NavigationContainer>
-				<MyDrawer />
+				<DrawerNav />
 			</NavigationContainer>
 		</TokenContext.Provider>
 	);

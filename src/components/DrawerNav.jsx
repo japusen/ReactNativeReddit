@@ -9,7 +9,7 @@ import DrawerContent from "./DrawerContent";
 
 const Drawer = createDrawerNavigator();
 
-const MyDrawer = () => {
+const DrawerNav = () => {
 	const theme = useTheme();
 
 	const [feed, setFeed] = useState("All");
@@ -34,11 +34,10 @@ const MyDrawer = () => {
 						},
 						headerRight: () => <SortMenu />,
 					}}
-					initialParams={{ feed, sort, topSort }}
 				/>
 			</Drawer.Navigator>
 		</FeedContext.Provider>
 	);
 };
 
-export default MyDrawer;
+export default DrawerNav;
