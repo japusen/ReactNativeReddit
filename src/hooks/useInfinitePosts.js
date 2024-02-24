@@ -1,6 +1,23 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getSubreddit } from "../requests/Subreddit";
 
+const parsePosts = (data) => {
+	const posts = new Array();
+	const uniquePostIDs = new Set();
+
+	data.pages.forEach((page) =>
+		page.children.forEach((wrapper) => {
+			const post = wrapper.data;
+			if (!uniquePostIDs.has(post.id)) {
+				uniquePostIDs.add(post.id);
+				posts.push(post);
+			}
+		})
+	);
+
+	return posts;
+};
+
 export const useInfinitePosts = (token, feed, sort, topSort) => {
 	const {
 		isPending,
@@ -19,20 +36,6 @@ export const useInfinitePosts = (token, feed, sort, topSort) => {
 		getNextPageParam: (lastPage, _) => lastPage.after,
 	});
 
-	const posts = new Array();
-	const uniquePostIDs = new Set();
-
-	data &&
-		data.pages.forEach((page) =>
-			page.children.forEach((wrapper) => {
-				const post = wrapper.data;
-				if (!uniquePostIDs.has(post.id)) {
-					uniquePostIDs.add(post.id);
-					posts.push(post);
-				}
-			})
-		);
-
 	const fetchMorePosts = () => {
 		hasNextPage && !isFetching && fetchNextPage();
 	};
@@ -40,7 +43,7 @@ export const useInfinitePosts = (token, feed, sort, topSort) => {
 	return {
 		isPending,
 		isError,
-		posts,
+		posts: data ? parsePosts(data) : [],
 		error,
 		isFetchingNextPage,
 		fetchMorePosts,
