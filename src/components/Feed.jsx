@@ -1,12 +1,17 @@
 import { StyleSheet } from "react-native";
-import { useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
-import { ActivityIndicator, Surface, Text } from "react-native-paper";
+import {
+	ActivityIndicator,
+	Surface,
+	Text,
+	Banner,
+	useTheme,
+} from "react-native-paper";
 
 import { TokenContext } from "../contexts/TokenContext";
-import { getSubreddit } from "../requests/Subreddit";
 import PostListing from "./PostListing";
 import { FeedContext } from "../contexts/FeedContext";
+import { useInfinitePosts } from "../hooks/useInfinitePosts";
 
 const styles = StyleSheet.create({
 	container: {
@@ -24,13 +29,18 @@ const styles = StyleSheet.create({
 });
 
 const Feed = () => {
+	const theme = useTheme();
 	const token = useContext(TokenContext);
 	const { feed, sort, topSort } = useContext(FeedContext);
 
-	const { isPending, isError, data, error } = useQuery({
-		queryKey: ["getSubredditListing", feed, sort, topSort],
-		queryFn: () => getSubreddit(token, feed, sort, topSort),
-	});
+	const {
+		isPending,
+		isError,
+		posts,
+		error,
+		isFetchingNextPage,
+		fetchMorePosts,
+	} = useInfinitePosts(token, feed, sort, topSort);
 
 	if (isPending) {
 		return (
@@ -48,11 +58,15 @@ const Feed = () => {
 		);
 	}
 
-	const posts = data.children.map((post) => post.data);
-
 	return (
 		<Surface style={styles.container}>
-			<PostListing posts={posts} />
+			<PostListing posts={posts} onEndReached={fetchMorePosts} />
+			<Banner
+				visible={isFetchingNextPage}
+				style={{ backgroundColor: theme.colors.primaryContainer }}
+			>
+				Loading more posts
+			</Banner>
 		</Surface>
 	);
 };

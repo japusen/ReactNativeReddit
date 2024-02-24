@@ -5,7 +5,7 @@ export const getSubreddit = async (
 	subreddit,
 	sort,
 	topSort = null,
-	after = null
+	pageParam
 ) => {
 	const endpoint = `https://oauth.reddit.com/r/${subreddit}/${sort}`;
 	const config = {
@@ -14,12 +14,13 @@ export const getSubreddit = async (
 		},
 		params: {
 			t: topSort,
-			after,
+			after: pageParam,
 			raw_json: 1,
 		},
 	};
 
-	console.log("endpoint", endpoint);
+	console.log("pageParam", pageParam);
+	// console.log("endpoint", endpoint);
 	// console.log("headers", config.headers);
 	// console.log("params", config.params);
 

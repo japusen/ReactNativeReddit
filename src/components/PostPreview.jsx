@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { Text, Card } from "react-native-paper";
-import { useContext, useState } from "react";
+import { memo } from "react";
 
 const styles = StyleSheet.create({
 	container: {
@@ -29,4 +29,4 @@ export const PostPreview = ({ item }) => {
 	);
 };
 
-export default PostPreview;
+export default memo(PostPreview);

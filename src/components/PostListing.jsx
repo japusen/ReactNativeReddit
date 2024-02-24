@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
-const PostListing = ({ posts }) => {
+const PostListing = ({ posts, onEndReached }) => {
 	if (posts.length === 0) {
 		return (
 			<View style={styles.containerCentered}>
@@ -30,7 +30,7 @@ const PostListing = ({ posts }) => {
 	return (
 		<FlatList
 			data={posts}
-			//onEndReached={onEndReach}
+			onEndReached={onEndReached}
 			ItemSeparatorComponent={ItemSeparator}
 			renderItem={({ item }) => <PostPreview item={item} />}
 			keyExtractor={(item) => item.id}
