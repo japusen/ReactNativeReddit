@@ -29,7 +29,7 @@ export const useInfinitePosts = (token, feed, sort, topSort) => {
 		isFetching,
 		isFetchingNextPage,
 	} = useInfiniteQuery({
-		queryKey: ["getSubredditListing"],
+		queryKey: ["getSubredditListing", feed, sort, topSort],
 		queryFn: ({ pageParam }) =>
 			getSubreddit(token, feed, sort, topSort, pageParam),
 		initialPageParam: null,
