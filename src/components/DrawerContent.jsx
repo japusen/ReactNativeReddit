@@ -1,9 +1,10 @@
 import { useContext, useState } from "react";
-import { StyleSheet, View, Image, ScrollView } from "react-native";
-import { Surface, Text, Searchbar, useTheme } from "react-native-paper";
+import { StyleSheet, View, Image, Pressable } from "react-native";
+import { Text, Searchbar, useTheme } from "react-native-paper";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { useDebounce } from "use-debounce";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigation, DrawerActions } from "@react-navigation/native";
 
 import { FeedContext } from "../contexts/FeedContext";
 import { TokenContext } from "../contexts/TokenContext";
@@ -44,7 +45,7 @@ const styles = StyleSheet.create({
 	},
 });
 
-const DrawerContent = (props) => {
+const DrawerContent = ({ navigation }) => {
 	const token = useContext(TokenContext);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [debouncedSearchQuery] = useDebounce(searchQuery, 500);
@@ -55,16 +56,11 @@ const DrawerContent = (props) => {
 	});
 
 	return (
-		<DrawerContentScrollView
-			{...props}
-			contentContainerStyle={{ display: "flex" }}
-		>
+		<DrawerContentScrollView contentContainerStyle={{ display: "flex" }}>
 			<View style={styles.container}>
 				<View>
 					<Text style={styles.header}>Feeds</Text>
-					<FeedDrawerItems
-						closeDrawer={props.navigation.closeDrawer}
-					/>
+					<FeedDrawerItems closeDrawer={navigation.closeDrawer} />
 				</View>
 
 				<View>
@@ -86,6 +82,11 @@ const FeedDrawerItems = ({ closeDrawer }) => {
 	const theme = useTheme();
 	const { feed, setFeed, setSort } = useContext(FeedContext);
 
+	const changeFeed = (name) => {
+		setFeed(name);
+		setSort("hot");
+	};
+
 	return defaultFeeds.map((name) => (
 		<DrawerItem
 			key={name}
@@ -95,8 +96,7 @@ const FeedDrawerItems = ({ closeDrawer }) => {
 			activeBackgroundColor={theme.colors.secondaryContainer}
 			onPress={() => {
 				if (feed !== name) {
-					setFeed(name);
-					setSort("hot");
+					changeFeed(name);
 				}
 
 				closeDrawer();
@@ -118,19 +118,40 @@ const SearchBar = ({ searchQuery, setSearchQuery }) => {
 };
 
 const SearchResults = ({ results }) => {
+	const { setFeed, setSort } = useContext(FeedContext);
+	const navigation = useNavigation();
+
+	const changeFeed = (name) => {
+		setFeed(name);
+		setSort("hot");
+		navigation.dispatch(DrawerActions.closeDrawer());
+	};
+
 	return (
 		<View style={styles.resultsContainer}>
 			{results.map((result) => (
-				<View key={result.id} style={styles.resultItem}>
-					<View style={[styles.tinyLogo, { overflow: "hidden" }]}>
-						<ResultIcon
-							communityIcon={result.communityIcon}
-							icon={result.icon}
-						/>
-					</View>
+				<Pressable
+					key={result.id}
+					onPress={() => {
+						if (result.name.startsWith("u_")) {
+							// TODO: handle user profile
+							console.log("user", result.name);
+						} else {
+							changeFeed(result.name);
+						}
+					}}
+				>
+					<View style={styles.resultItem}>
+						<View style={[styles.tinyLogo, { overflow: "hidden" }]}>
+							<ResultIcon
+								communityIcon={result.communityIcon}
+								icon={result.icon}
+							/>
+						</View>
 
-					<Text key={result.id}>{result.name}</Text>
-				</View>
+						<Text key={result.id}>{result.name}</Text>
+					</View>
+				</Pressable>
 			))}
 		</View>
 	);
