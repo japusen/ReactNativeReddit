@@ -1,17 +1,13 @@
 import { useState } from "react";
-import { useTheme } from "react-native-paper";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import { FeedContext } from "../contexts/FeedContext";
-import Feed from "./Feed";
-import SortMenu from "./SortMenu";
+import MainScreen from "./MainScreen";
 import DrawerContent from "./DrawerContent";
 
 const Drawer = createDrawerNavigator();
 
 const DrawerNav = () => {
-	const theme = useTheme();
-
 	const [feed, setFeed] = useState("All");
 	const [sort, setSort] = useState("hot");
 	const [topSort, setTopSort] = useState(null);
@@ -21,18 +17,14 @@ const DrawerNav = () => {
 			value={{ feed, setFeed, sort, setSort, topSort, setTopSort }}
 		>
 			<Drawer.Navigator
-				initialRouteName="Feed"
+				initialRouteName="MainScreen"
 				drawerContent={(props) => <DrawerContent {...props} />}
 			>
 				<Drawer.Screen
-					name="Feed"
-					component={Feed}
+					name="MainScreen"
+					component={MainScreen}
 					options={{
-						title: feed,
-						headerStyle: {
-							backgroundColor: theme.colors.primaryContainer,
-						},
-						headerRight: () => <SortMenu />,
+						headerShown: false,
 					}}
 				/>
 			</Drawer.Navigator>

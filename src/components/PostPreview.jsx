@@ -1,6 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import { Text, Card } from "react-native-paper";
 import { memo } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 const styles = StyleSheet.create({
 	container: {
@@ -15,8 +16,17 @@ const styles = StyleSheet.create({
 });
 
 export const PostPreview = ({ item }) => {
+	const navigation = useNavigation();
+
 	return (
-		<Card style={{ marginHorizontal: 10 }}>
+		<Card
+			onPress={() =>
+				navigation.navigate("Post", {
+					postID: item.id,
+				})
+			}
+			style={{ marginHorizontal: 10 }}
+		>
 			<Text>{item.title}</Text>
 			<Text>{item.subreddit}</Text>
 			<Text>{item.author}</Text>
