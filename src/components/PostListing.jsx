@@ -1,13 +1,12 @@
 import { StyleSheet, View } from "react-native";
 import { FlatList } from "react-native";
-import { Text } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 
 import PostPreview from "./PostPreview";
 
 const styles = StyleSheet.create({
 	containerCentered: {
 		flex: 1,
-		//backgroundColor: "#fff",
 		alignItems: "center",
 		justifyContent: "center",
 	},
@@ -19,6 +18,8 @@ const styles = StyleSheet.create({
 const ItemSeparator = () => <View style={styles.separator} />;
 
 const PostListing = ({ posts, onEndReached }) => {
+	const theme = useTheme();
+
 	if (posts.length === 0) {
 		return (
 			<View style={styles.containerCentered}>
@@ -34,9 +35,10 @@ const PostListing = ({ posts, onEndReached }) => {
 			ItemSeparatorComponent={ItemSeparator}
 			renderItem={({ item }) => <PostPreview item={item} />}
 			keyExtractor={(item) => item.id}
-			//ListHeaderComponent={header}
-			//extraData={extraData}
-			//style={{ padding: 5 }}
+			style={{
+				paddingTop: 10,
+				backgroundColor: theme.colors.surfaceVariant,
+			}}
 		/>
 	);
 };

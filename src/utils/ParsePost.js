@@ -9,6 +9,7 @@ const parsePost = (post) => {
 		isSpoiler: post.spoiler,
 		isLocked: post.locked,
 		isPinned: post.pinned,
+		isStickied: post.stickied,
 		domain: post.domain,
 		permalink: post.permalink,
 		time: post.created_utc,
