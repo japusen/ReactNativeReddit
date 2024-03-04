@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const getSubreddit = async (
+export const getSubredditListing = async (
 	token,
 	subreddit,
 	sort,

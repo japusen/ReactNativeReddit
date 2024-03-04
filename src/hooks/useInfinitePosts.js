@@ -1,16 +1,17 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getSubreddit } from "../requests/Subreddit";
+import { getSubredditListing } from "../requests/SubredditListing";
+import parsePost from "../utils/ParsePost";
 
-const parsePosts = (data) => {
+const getPostsByPage = (data) => {
 	const posts = new Array();
 	const uniquePostIDs = new Set();
 
 	data.pages.forEach((page) =>
 		page.children.forEach((wrapper) => {
-			const post = wrapper.data;
-			if (!uniquePostIDs.has(post.id)) {
-				uniquePostIDs.add(post.id);
-				posts.push(post);
+			const parsedPost = parsePost(wrapper.data);
+			if (!uniquePostIDs.has(parsedPost.id)) {
+				uniquePostIDs.add(parsedPost.id);
+				posts.push(parsedPost);
 			}
 		})
 	);
@@ -31,7 +32,7 @@ export const useInfinitePosts = (token, feed, sort, topSort) => {
 	} = useInfiniteQuery({
 		queryKey: ["getSubredditListing", feed, sort, topSort],
 		queryFn: ({ pageParam }) =>
-			getSubreddit(token, feed, sort, topSort, pageParam),
+			getSubredditListing(token, feed, sort, topSort, pageParam),
 		initialPageParam: null,
 		getNextPageParam: (lastPage, _) => lastPage.after,
 	});
@@ -43,7 +44,7 @@ export const useInfinitePosts = (token, feed, sort, topSort) => {
 	return {
 		isPending,
 		isError,
-		posts: data ? parsePosts(data) : [],
+		posts: data ? getPostsByPage(data) : [],
 		error,
 		isFetchingNextPage,
 		fetchMorePosts,
