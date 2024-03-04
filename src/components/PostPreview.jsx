@@ -1,4 +1,4 @@
-import { StyleSheet, View, Image, Pressable } from "react-native";
+import { StyleSheet, View, Image, Pressable, ScrollView } from "react-native";
 import { Text, Card } from "react-native-paper";
 import { memo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
 	separator: {
 		marginTop: 10,
 	},
-	image: {
+	thumbnail: {
 		height: 100,
 		width: 100,
 	},
@@ -24,130 +24,227 @@ const styles = StyleSheet.create({
 		height: 400,
 		backgroundColor: "black",
 	},
+	redditVideo: { height: 500 },
+	externalVideo: { height: 500, backgroundColor: "black" },
 });
 
 export const PostPreview = ({ item }) => {
-	const navigation = useNavigation();
 	const [showMedia, setShowMedia] = useState(false);
 
 	const toggleShowMedia = () => {
 		setShowMedia(!showMedia);
 	};
 
-	console.log(item.post_hint);
+	switch (item.type) {
+		case "self":
+			return (
+				<PreviewCard>
+					<Text>Type: {item.type}</Text>
+					<Text>{item.title}</Text>
+					<Text>{item.subreddit}</Text>
+					<Text>{item.author}</Text>
+					<Text>{item.score}</Text>
+					{item.over_18 && <Text>nsfw</Text>}
+					{item.spoiler && <Text>spoiler</Text>}
+					{item.locked && <Text>locked</Text>}
+				</PreviewCard>
+			);
+		case "gallery":
+			return (
+				<PreviewCard>
+					{item.thumbnail && (
+						<Thumbnail
+							url={item.thumbnail}
+							onPress={toggleShowMedia}
+						/>
+					)}
+					<Text>Type: {item.type}</Text>
+					<Text>{item.title}</Text>
+					<Text>{item.subreddit}</Text>
+					<Text>{item.author}</Text>
+					<Text>{item.score}</Text>
+					{item.over_18 && <Text>nsfw</Text>}
+					{item.spoiler && <Text>spoiler</Text>}
+					{item.locked && <Text>locked</Text>}
+				</PreviewCard>
+			);
+		case "image":
+			return (
+				<PreviewCard>
+					<Thumbnail url={item.thumbnail} onPress={toggleShowMedia} />
+					<Text>Type: {item.type}</Text>
+					<Text>{item.title}</Text>
+					<Text>{item.subreddit}</Text>
+					<Text>{item.author}</Text>
+					<Text>{item.score}</Text>
+					{item.over_18 && <Text>nsfw</Text>}
+					{item.spoiler && <Text>spoiler</Text>}
+					{item.locked && <Text>locked</Text>}
+					{showMedia && <RedditImage url={item.imageURL} />}
+				</PreviewCard>
+			);
+		case "reddit_video":
+			return (
+				<PreviewCard>
+					<Thumbnail url={item.thumbnail} onPress={toggleShowMedia} />
+					<Text>Type: {item.type}</Text>
+					<Text>{item.title}</Text>
+					<Text>{item.subreddit}</Text>
+					<Text>{item.author}</Text>
+					<Text>{item.score}</Text>
+					{item.over_18 && <Text>nsfw</Text>}
+					{item.spoiler && <Text>spoiler</Text>}
+					{item.locked && <Text>locked</Text>}
+					{showMedia && <RedditVideo url={item.videoURL} />}
+				</PreviewCard>
+			);
+		case "external_video":
+			return (
+				<PreviewCard>
+					<Thumbnail url={item.thumbnail} onPress={toggleShowMedia} />
+					<Text>Type: {item.type}</Text>
+					<Text>{item.title}</Text>
+					<Text>{item.subreddit}</Text>
+					<Text>{item.author}</Text>
+					<Text>{item.score}</Text>
+					{item.over_18 && <Text>nsfw</Text>}
+					{item.spoiler && <Text>spoiler</Text>}
+					{item.locked && <Text>locked</Text>}
+					{showMedia && <ExternalVideo url={item.videoURL} />}
+				</PreviewCard>
+			);
+		case "link":
+			return (
+				<PreviewCard>
+					<Thumbnail url={item.thumbnail} onPress={toggleShowMedia} />
+					<Text>Type: {item.type}</Text>
+					<Text>{item.title}</Text>
+					<Text>{item.subreddit}</Text>
+					<Text>{item.author}</Text>
+					<Text>{item.score}</Text>
+					{item.over_18 && <Text>nsfw</Text>}
+					{item.spoiler && <Text>spoiler</Text>}
+					{item.locked && <Text>locked</Text>}
+					<Text>{item.link}</Text>
+				</PreviewCard>
+			);
+		default:
+			return (
+				<PreviewCard>
+					<Text>Type: ?</Text>
+					<Text>{item.title}</Text>
+					<Text>{item.subreddit}</Text>
+					<Text>{item.author}</Text>
+					<Text>{item.score}</Text>
+					{item.over_18 && <Text>nsfw</Text>}
+					{item.spoiler && <Text>spoiler</Text>}
+					{item.locked && <Text>locked</Text>}
+					<Text>{item.link}</Text>
+				</PreviewCard>
+			);
+	}
+};
+
+const PreviewCard = ({ id, children }) => {
+	const navigation = useNavigation();
+
 	return (
-		<View style={{ marginHorizontal: 10 }}>
-			<Card
+		<Card style={{ marginHorizontal: 10 }}>
+			<View
 				onPress={() => {
 					// navigation.navigate("Post", {
-					// 	postID: item.id,
+					// 	postID: id,
 					// });
-					//console.log(item.media);
 				}}
 			>
-				<Text>{item.title}</Text>
-				<Text>{item.subreddit}</Text>
-				<Text>{item.author}</Text>
-				<Text>{item.score}</Text>
-				{item.over_18 && <Text>nsfw</Text>}
-				{item.spoiler && <Text>spoiler</Text>}
-				{item.locked && <Text>locked</Text>}
-
-				{!item.is_self && (
-					<Pressable onPress={toggleShowMedia}>
-						<Thumbnail
-							preview={item.preview}
-							thumbnail={item.thumbnail}
-						/>
-					</Pressable>
-				)}
-			</Card>
-			{item.media && showMedia && <Media media={item.media} />}
-			{item.post_hint === "link" &&
-				item.domain === "i.imgur.com" &&
-				showMedia && (
-					<VideoPlayer
-						videoProps={{
-							shouldPlay: true,
-							resizeMode: ResizeMode.CONTAIN,
-							source: {
-								uri: item.url.replace(".gifv", ".mp4"),
-							},
-						}}
-						// style={{ flex: 1 }}
-					/>
-				)}
-			{!item.media && item.post_hint !== "link" && showMedia && (
-				<Image
-					resizeMode="contain"
-					style={styles.fullImage}
-					source={{
-						uri: item.url,
-					}}
-				/>
-			)}
-		</View>
+				{children}
+			</View>
+		</Card>
 	);
 };
 
-const Thumbnail = ({ preview, thumbnail }) => {
-	const uri = preview ? preview.images.at(0).source.url : thumbnail;
+const Thumbnail = ({ url, onPress }) => {
+	return (
+		<Pressable onPress={onPress}>
+			<Image
+				resizeMode="contain"
+				style={styles.thumbnail}
+				source={{
+					uri: url,
+				}}
+			/>
+		</Pressable>
+	);
+};
+
+const RedditImage = ({ url }) => {
 	return (
 		<Image
-			style={styles.image}
+			resizeMode="contain"
+			style={styles.fullImage}
 			source={{
-				uri,
+				uri: url,
 			}}
 		/>
 	);
 };
 
-const Media = ({ media }) => {
-	if (media.reddit_video) {
-		// console.log("reddit_video", Object.keys(media.reddit_video));
-		return (
-			<VideoPlayer
-				videoProps={{
-					shouldPlay: true,
-					resizeMode: ResizeMode.CONTAIN,
-					source: {
-						uri: media.reddit_video.dash_url,
-					},
-				}}
-			/>
-		);
-	} else {
-		if (media.oembed) {
-			console.log("oembed");
-			// console.log(media.oembed.html);
-			const url = extractSrcFromHTML(media.oembed.html);
-			console.log(url);
-			return (
-				<WebView
-					// originWhitelist={["*"]}
-					allowsFullscreenVideo
-					allowsInlineMediaPlayback
-					mediaPlaybackRequiresUserAction
-					// source={{ html: media.oembed.html }}
-					source={{ uri: url }}
-					style={{ height: 500, backgroundColor: "black" }}
-				/>
-			);
-		} else {
-			console.log("media", Object.keys(media));
-		}
-	}
+const RedditVideo = ({ url }) => {
+	const [isMute, setIsMute] = useState(false);
+	return (
+		<VideoPlayer
+			videoProps={{
+				shouldPlay: true,
+				resizeMode: ResizeMode.CONTAIN,
+				source: {
+					uri: url,
+				},
+				isMuted: isMute,
+			}}
+			mute={{
+				enterMute: () => setIsMute(!isMute),
+				exitMute: () => setIsMute(!isMute),
+				isMute,
+			}}
+			style={styles.redditVideo}
+		/>
+	);
 };
 
-const extractSrcFromHTML = (htmlString) => {
-	const regex = /src\s*=\s*["']([^"']+)["']/;
-	const match = regex.exec(htmlString);
+const ExternalVideo = ({ url }) => {
+	return (
+		<WebView
+			// originWhitelist={["*"]}
+			allowsFullscreenVideo
+			allowsInlineMediaPlayback
+			mediaPlaybackRequiresUserAction
+			// source={{ html: media.oembed.html }}
+			source={{ uri: url }}
+			style={styles.externalVideo}
+		/>
+	);
+};
 
-	if (match && match.length > 1) {
-		return match[1];
-	} else {
-		return null; // Return null if no match is found
-	}
+const ImgurVideo = () => {
+	const [isMute, setIsMute] = useState(false);
+	return (
+		<VideoPlayer
+			videoProps={{
+				shouldPlay: true,
+				resizeMode: ResizeMode.CONTAIN,
+				source: {
+					uri: item.url.replace(".gifv", ".mp4"),
+				},
+				isMuted: isMute,
+			}}
+			mute={{
+				enterMute: () => setIsMute(!isMute),
+				exitMute: () => setIsMute(!isMute),
+				isMute,
+			}}
+			style={{ height: 500 }}
+		/>
+	);
 };
 
 export default memo(PostPreview);
