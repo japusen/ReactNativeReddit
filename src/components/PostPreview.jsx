@@ -5,6 +5,14 @@ import { useNavigation } from "@react-navigation/native";
 import { WebView } from "react-native-webview";
 import { ResizeMode } from "expo-av";
 import VideoPlayer from "expo-video-player";
+import Carousel from "react-native-reanimated-carousel";
+import { useWindowDimensions } from "react-native";
+import Animated, {
+	Extrapolate,
+	interpolate,
+	useAnimatedStyle,
+	useSharedValue,
+} from "react-native-reanimated";
 
 const styles = StyleSheet.create({
 	card: {
@@ -70,13 +78,7 @@ export const PostPreview = ({ item }) => {
 			return (
 				<PreviewCard>
 					<Header post={item} toggleShowMedia={toggleShowMedia} />
-					{showMedia && (
-						<View style={{ display: "flex", gap: 10 }}>
-							{item.gallery.map((data) => (
-								<RedditImage key={data.id} url={data.url} />
-							))}
-						</View>
-					)}
+					{showMedia && <GalleryCarousel data={item.gallery} />}
 				</PreviewCard>
 			);
 		case "image":
@@ -160,7 +162,6 @@ const Header = ({ post, toggleShowMedia }) => {
 						isStickied={post.isStickied}
 					/>
 					<Text>Type: {post.type}</Text>
-					<Text>url: {post.videoURL && post.videoURL}</Text>
 				</View>
 			</View>
 		</Pressable>
@@ -244,6 +245,125 @@ const WebviewVideo = ({ url }) => {
 			source={{ uri: url }}
 			style={styles.externalVideo}
 		/>
+	);
+};
+
+const GalleryCarousel = ({ data }) => {
+	const progressValue = useSharedValue(0);
+	const windowWidth = useWindowDimensions().width;
+	return (
+		<View style={{ flex: 1, display: "flex", gap: 10, marginBottom: 10 }}>
+			<Carousel
+				loop={false}
+				mode="normal"
+				width={windowWidth}
+				height={windowWidth * 1.25}
+				data={data}
+				scrollAnimationDuration={1000}
+				onProgressChange={(_, absoluteProgress) =>
+					(progressValue.value = absoluteProgress)
+				}
+				panGestureHandlerProps={{
+					activeOffsetX: [-10, 10],
+				}}
+				renderItem={({ index }) => (
+					<View
+						style={{
+							flex: 1,
+							justifyContent: "center",
+							backgroundColor: "black",
+						}}
+					>
+						<RedditImage
+							key={data[index].id}
+							url={data[index].url}
+						/>
+					</View>
+				)}
+			/>
+			{!!progressValue && (
+				<View
+					style={{
+						flexDirection: "row",
+						gap: 5,
+						//justifyContent: "space-around",
+						//width: "100%",
+						//alignItems: "center",
+						alignSelf: "center",
+					}}
+				>
+					{data.map((_, index) => {
+						return (
+							<PaginationItem
+								animValue={progressValue}
+								index={index}
+								key={index}
+								// isRotate={isVertical}
+								length={data.length}
+							/>
+						);
+					})}
+				</View>
+			)}
+		</View>
+	);
+};
+
+const PaginationItem = (props) => {
+	const { animValue, index, length, isRotate } = props;
+	const width = 10;
+
+	const animStyle = useAnimatedStyle(() => {
+		let inputRange = [index - 1, index, index + 1];
+		let outputRange = [-width, 0, width];
+
+		if (index === 0 && animValue?.value > length - 1) {
+			inputRange = [length - 1, length, length + 1];
+			outputRange = [-width, 0, width];
+		}
+
+		return {
+			transform: [
+				{
+					translateX: interpolate(
+						animValue?.value,
+						inputRange,
+						outputRange,
+						Extrapolate.CLAMP
+					),
+				},
+			],
+		};
+	}, [animValue, index, length]);
+	return (
+		<View
+			style={{
+				backgroundColor: "white",
+				width,
+				height: width,
+				borderRadius: 50,
+				borderColor: "black",
+				borderStyle: "solid",
+				borderWidth: 1,
+				overflow: "hidden",
+				transform: [
+					{
+						rotateZ: isRotate ? "90deg" : "0deg",
+					},
+				],
+			}}
+		>
+			<Animated.View
+				style={[
+					{
+						borderRadius: 50,
+						backgroundColor: "black",
+						flex: 1,
+					},
+					animStyle,
+				]}
+			/>
+		</View>
 	);
 };
 
