@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
 	},
 	fullImage: {
 		height: 500,
+		// flex: 1,
 		backgroundColor: "black",
 	},
 	redditVideo: { height: 500 },
@@ -250,12 +251,12 @@ const WebviewVideo = ({ url }) => {
 
 const GalleryCarousel = ({ data }) => {
 	const progressValue = useSharedValue(0);
-	const windowWidth = useWindowDimensions().width;
+	const windowWidth = useWindowDimensions().width - 16; // card has horizontal margin of 8 on each side
 	return (
 		<View style={{ flex: 1, display: "flex", gap: 10, marginBottom: 10 }}>
 			<Carousel
 				loop={false}
-				mode="normal"
+				mode="parallax"
 				width={windowWidth}
 				height={windowWidth * 1.25}
 				data={data}
@@ -263,6 +264,11 @@ const GalleryCarousel = ({ data }) => {
 				onProgressChange={(_, absoluteProgress) =>
 					(progressValue.value = absoluteProgress)
 				}
+				modeConfig={{
+					parallaxScrollingScale: 1,
+					parallaxScrollingOffset: 0,
+					parallaxAdjacentItemScale: 0.8,
+				}}
 				panGestureHandlerProps={{
 					activeOffsetX: [-10, 10],
 				}}
@@ -270,8 +276,9 @@ const GalleryCarousel = ({ data }) => {
 					<View
 						style={{
 							flex: 1,
-							justifyContent: "center",
-							backgroundColor: "black",
+							// justifyContent: "center",
+							// alignItems: "center",
+							//backgroundColor: "black",
 						}}
 					>
 						<RedditImage
@@ -310,6 +317,7 @@ const GalleryCarousel = ({ data }) => {
 };
 
 const PaginationItem = (props) => {
+	const theme = useTheme();
 	const { animValue, index, length, isRotate } = props;
 	const width = 10;
 
@@ -342,7 +350,7 @@ const PaginationItem = (props) => {
 				width,
 				height: width,
 				borderRadius: 50,
-				borderColor: "black",
+				borderColor: theme.colors.secondary,
 				borderStyle: "solid",
 				borderWidth: 1,
 				overflow: "hidden",
@@ -357,7 +365,7 @@ const PaginationItem = (props) => {
 				style={[
 					{
 						borderRadius: 50,
-						backgroundColor: "black",
+						backgroundColor: theme.colors.secondary,
 						flex: 1,
 					},
 					animStyle,
