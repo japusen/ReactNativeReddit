@@ -8,7 +8,6 @@ import VideoPlayer from "expo-video-player";
 import Carousel from "react-native-reanimated-carousel";
 import { useWindowDimensions } from "react-native";
 import Animated, {
-	Extrapolate,
 	interpolate,
 	useAnimatedStyle,
 	useSharedValue,
@@ -52,10 +51,16 @@ const styles = StyleSheet.create({
 		width: 100,
 		height: 100,
 	},
-	fullImage: {
+	mediaContainer: {
+		marginHorizontal: 8,
+		marginBottom: 8,
 		height: 500,
-		// flex: 1,
 		backgroundColor: "black",
+		overflow: "hidden",
+		borderRadius: 10,
+	},
+	fullImage: {
+		flex: 1,
 	},
 	redditVideo: { height: 500 },
 	externalVideo: { height: 500, backgroundColor: "black" },
@@ -79,28 +84,46 @@ export const PostPreview = ({ item }) => {
 			return (
 				<PreviewCard>
 					<Header post={item} toggleShowMedia={toggleShowMedia} />
-					{showMedia && <GalleryCarousel data={item.gallery} />}
+					{showMedia && (
+						<MediaContainer
+							additionalStyle={{ position: "relative" }}
+						>
+							<GalleryCarousel data={item.gallery} />
+						</MediaContainer>
+					)}
 				</PreviewCard>
 			);
 		case "image":
 			return (
 				<PreviewCard>
 					<Header post={item} toggleShowMedia={toggleShowMedia} />
-					{showMedia && <RedditImage url={item.imageURL} />}
+					{showMedia && (
+						<MediaContainer>
+							<RedditImage url={item.imageURL} />
+						</MediaContainer>
+					)}
 				</PreviewCard>
 			);
 		case "reddit_video":
 			return (
 				<PreviewCard>
 					<Header post={item} toggleShowMedia={toggleShowMedia} />
-					{showMedia && <RedditVideo url={item.videoURL} />}
+					{showMedia && (
+						<MediaContainer>
+							<RedditVideo url={item.videoURL} />
+						</MediaContainer>
+					)}
 				</PreviewCard>
 			);
 		case "external_video":
 			return (
 				<PreviewCard>
 					<Header post={item} toggleShowMedia={toggleShowMedia} />
-					{showMedia && <WebviewVideo url={item.videoURL} />}
+					{showMedia && (
+						<MediaContainer>
+							<WebviewVideo url={item.videoURL} />
+						</MediaContainer>
+					)}
 				</PreviewCard>
 			);
 		case "link":
@@ -119,7 +142,7 @@ export const PostPreview = ({ item }) => {
 	}
 };
 
-const PreviewCard = ({ id, children }) => {
+const PreviewCard = ({ children }) => {
 	const theme = useTheme();
 
 	return (
@@ -203,6 +226,12 @@ const Thumbnail = ({ url, onPress }) => {
 	);
 };
 
+const MediaContainer = ({ children, additionalStyle = null }) => {
+	return (
+		<View style={[styles.mediaContainer, additionalStyle]}>{children}</View>
+	);
+};
+
 const RedditImage = ({ url }) => {
 	return (
 		<Image
@@ -251,74 +280,62 @@ const WebviewVideo = ({ url }) => {
 
 const GalleryCarousel = ({ data }) => {
 	const progressValue = useSharedValue(0);
-	const windowWidth = useWindowDimensions().width - 16; // card has horizontal margin of 8 on each side
+	const windowWidth = useWindowDimensions().width - (2 * 8 + 2 * 8); // card and mediaContainer each have horizontal margin of 8 on each side
 	return (
-		<View style={{ flex: 1, display: "flex", gap: 10, marginBottom: 10 }}>
+		<>
 			<Carousel
 				loop={false}
-				mode="parallax"
+				mode="normal"
 				width={windowWidth}
-				height={windowWidth * 1.25}
 				data={data}
 				scrollAnimationDuration={1000}
 				onProgressChange={(_, absoluteProgress) =>
 					(progressValue.value = absoluteProgress)
 				}
-				modeConfig={{
-					parallaxScrollingScale: 1,
-					parallaxScrollingOffset: 0,
-					parallaxAdjacentItemScale: 0.8,
-				}}
 				panGestureHandlerProps={{
 					activeOffsetX: [-10, 10],
 				}}
 				renderItem={({ index }) => (
-					<View
-						style={{
-							flex: 1,
-							// justifyContent: "center",
-							// alignItems: "center",
-							//backgroundColor: "black",
-						}}
-					>
-						<RedditImage
-							key={data[index].id}
-							url={data[index].url}
-						/>
-					</View>
+					<RedditImage key={data[index].id} url={data[index].url} />
 				)}
 			/>
 			{!!progressValue && (
 				<View
 					style={{
-						flexDirection: "row",
-						gap: 5,
-						//justifyContent: "space-around",
-						//width: "100%",
-						//alignItems: "center",
+						position: "absolute",
+						bottom: 8,
+						backgroundColor: "black",
+						padding: 5,
+						borderRadius: 10,
 						alignSelf: "center",
 					}}
 				>
-					{data.map((_, index) => {
-						return (
-							<PaginationItem
-								animValue={progressValue}
-								index={index}
-								key={index}
-								// isRotate={isVertical}
-								length={data.length}
-							/>
-						);
-					})}
+					<View
+						style={{
+							flexDirection: "row",
+							gap: 5,
+						}}
+					>
+						{data.map((_, index) => {
+							return (
+								<PaginationItem
+									animValue={progressValue}
+									index={index}
+									key={index}
+									length={data.length}
+								/>
+							);
+						})}
+					</View>
 				</View>
 			)}
-		</View>
+		</>
 	);
 };
 
 const PaginationItem = (props) => {
 	const theme = useTheme();
-	const { animValue, index, length, isRotate } = props;
+	const { animValue, index, length } = props;
 	const width = 10;
 
 	const animStyle = useAnimatedStyle(() => {
@@ -336,13 +353,13 @@ const PaginationItem = (props) => {
 					translateX: interpolate(
 						animValue?.value,
 						inputRange,
-						outputRange,
-						Extrapolate.CLAMP
+						outputRange
 					),
 				},
 			],
 		};
 	}, [animValue, index, length]);
+
 	return (
 		<View
 			style={{
@@ -350,22 +367,17 @@ const PaginationItem = (props) => {
 				width,
 				height: width,
 				borderRadius: 50,
-				borderColor: theme.colors.secondary,
+				borderColor: "white",
 				borderStyle: "solid",
 				borderWidth: 1,
 				overflow: "hidden",
-				transform: [
-					{
-						rotateZ: isRotate ? "90deg" : "0deg",
-					},
-				],
 			}}
 		>
 			<Animated.View
 				style={[
 					{
 						borderRadius: 50,
-						backgroundColor: theme.colors.secondary,
+						backgroundColor: theme.colors.primary,
 						flex: 1,
 					},
 					animStyle,
