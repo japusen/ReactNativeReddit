@@ -70,6 +70,13 @@ const commonProps = (post) => {
 		domain: post.domain,
 		permalink: post.permalink,
 		time: post.created_utc,
+		linkFlair: parseFlair(
+			post.link_flair_type,
+			post.link_flair_text,
+			post.link_flair_richtext,
+			post.link_flair_background_color,
+			post.link_flair_text_color
+		),
 	};
 };
 
@@ -155,6 +162,36 @@ const isValidThumbnail = (thumbnail) => {
 		thumbnail !== "image" &&
 		thumbnail !== "spoiler"
 	);
+};
+
+const parseFlair = (type, text, richText, bgColor, textColorType) => {
+	const textColor =
+		!bgColor || !textColorType || textColorType === "light"
+			? "white"
+			: "black";
+	const backgroundColor = bgColor ? bgColor : "gray";
+
+	if (type === "text" && text) {
+		return {
+			type,
+			text,
+			backgroundColor,
+			textColor,
+		};
+	} else if (type === "richtext" && richText) {
+		return {
+			type,
+			richText: richText.map((item) =>
+				item.e === "emoji"
+					? { type: item.e, value: item.u }
+					: { type: item.e, value: item.t }
+			),
+			backgroundColor,
+			textColor,
+		};
+	} else {
+		return null;
+	}
 };
 
 const extractVideoSrcFromHTML = (htmlString) => {
