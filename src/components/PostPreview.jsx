@@ -1,5 +1,5 @@
 import { StyleSheet, View, Image, Pressable, ScrollView } from "react-native";
-import { Text, Card, useTheme } from "react-native-paper";
+import { Text, Card, useTheme, Icon, IconButton } from "react-native-paper";
 import { memo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { WebView } from "react-native-webview";
@@ -44,12 +44,15 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		height: 100,
 		width: 100,
+		position: "relative",
 	},
-	thumbnail: { flex: 1 },
+	thumbnailImage: { flex: 1 },
 	thumbnailPlaceholder: {
-		flex: 1,
-		width: 100,
-		height: 100,
+		overflow: "hidden",
+		borderRadius: 10,
+		height: 50,
+		width: 50,
+		backgroundColor: "black",
 	},
 	mediaContainer: {
 		marginHorizontal: 8,
@@ -77,13 +80,13 @@ export const PostPreview = ({ item }) => {
 		case "self":
 			return (
 				<PreviewCard>
-					<Header post={item} toggleShowMedia={toggleShowMedia} />
+					<Header post={item} onThumbnailClicked={toggleShowMedia} />
 				</PreviewCard>
 			);
 		case "gallery":
 			return (
 				<PreviewCard>
-					<Header post={item} toggleShowMedia={toggleShowMedia} />
+					<Header post={item} onThumbnailClicked={toggleShowMedia} />
 					{showMedia && (
 						<MediaContainer
 							additionalStyle={{ position: "relative" }}
@@ -96,7 +99,7 @@ export const PostPreview = ({ item }) => {
 		case "image":
 			return (
 				<PreviewCard>
-					<Header post={item} toggleShowMedia={toggleShowMedia} />
+					<Header post={item} onThumbnailClicked={toggleShowMedia} />
 					{showMedia && (
 						<MediaContainer>
 							<RedditImage url={item.imageURL} />
@@ -107,7 +110,7 @@ export const PostPreview = ({ item }) => {
 		case "reddit_video":
 			return (
 				<PreviewCard>
-					<Header post={item} toggleShowMedia={toggleShowMedia} />
+					<Header post={item} onThumbnailClicked={toggleShowMedia} />
 					{showMedia && (
 						<MediaContainer>
 							<RedditVideo url={item.videoURL} />
@@ -118,7 +121,7 @@ export const PostPreview = ({ item }) => {
 		case "external_video":
 			return (
 				<PreviewCard>
-					<Header post={item} toggleShowMedia={toggleShowMedia} />
+					<Header post={item} onThumbnailClicked={toggleShowMedia} />
 					{showMedia && (
 						<MediaContainer>
 							<WebviewVideo url={item.videoURL} />
@@ -129,14 +132,14 @@ export const PostPreview = ({ item }) => {
 		case "link":
 			return (
 				<PreviewCard>
-					<Header post={item} toggleShowMedia={() => {}} />
+					<Header post={item} onThumbnailClicked={() => {}} />
 					<Text>{item.link}</Text>
 				</PreviewCard>
 			);
 		default:
 			return (
 				<PreviewCard>
-					<Header post={item} toggleShowMedia={() => {}} />
+					<Header post={item} onThumbnailClicked={() => {}} />
 				</PreviewCard>
 			);
 	}
@@ -152,24 +155,25 @@ const PreviewCard = ({ children }) => {
 	);
 };
 
-const Header = ({ post, toggleShowMedia }) => {
+const Header = ({ post, onThumbnailClicked }) => {
 	const navigation = useNavigation();
 	const theme = useTheme();
 
 	return (
 		<Pressable
-			onPress={() => {
-				// navigation.navigate("Post", {
-				// 	postID: id,
-				// });
-			}}
+		// onPress={() => {
+		// 	navigation.navigate("Post", {
+		// 		postID: post.id,
+		// 	});
+		// }}
 		>
 			<View style={styles.postHeader}>
-				{/* {post.thumbnail && (
-					<Thumbnail url={post.thumbnail} onPress={toggleShowMedia} />
-				)} */}
 				{post.type !== "self" && (
-					<Thumbnail url={post.thumbnail} onPress={toggleShowMedia} />
+					<Thumbnail
+						postType={post.type}
+						url={post.thumbnail}
+						onPress={onThumbnailClicked}
+					/>
 				)}
 				<View style={styles.postInfo}>
 					<Text style={{ color: theme.colors.primary }}>
@@ -204,25 +208,68 @@ const Indicators = ({ isNsfw, isSpoiler, isLocked, isPinned, isStickied }) => {
 	);
 };
 
-const Thumbnail = ({ url, onPress }) => {
+const Thumbnail = ({ postType, url, onPress }) => {
+	const iconName = () => {
+		switch (postType) {
+			case "image":
+				return "image-area";
+			case "gallery":
+				return "image-album";
+			case "reddit_video":
+			case "external_video":
+				return "video-box";
+			default:
+				return "link";
+		}
+	};
+
+	if (url) {
+		return (
+			<Pressable onPress={onPress}>
+				<View style={styles.thumbnailContainer}>
+					<Image
+						resizeMode="cover"
+						style={styles.thumbnailImage}
+						source={{
+							uri: url,
+						}}
+					/>
+					<View
+						style={{
+							position: "absolute",
+							top: 5,
+							left: 5,
+							backgroundColor: "black",
+							borderRadius: 5,
+							padding: 2,
+						}}
+					>
+						<Icon
+							source={iconName()}
+							size={18}
+							color="white"
+						></Icon>
+					</View>
+				</View>
+			</Pressable>
+		);
+	}
+
 	return (
-		<Pressable onPress={onPress} style={styles.thumbnailContainer}>
-			{url ? (
-				<Image
-					resizeMode="cover"
-					style={styles.thumbnail}
-					source={{
-						uri: url,
-					}}
-				/>
-			) : (
-				<Image
-					resizeMode="contain"
-					style={styles.thumbnailPlaceholder}
-					source={require("../../assets/play-circle-outline.png")}
-				/>
-			)}
-		</Pressable>
+		<View style={styles.thumbnailPlaceholder}>
+			<IconButton
+				icon={iconName()}
+				iconColor="white"
+				size={20}
+				onPress={onPress}
+				style={{
+					flex: 1,
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "center",
+				}}
+			/>
+		</View>
 	);
 };
 
