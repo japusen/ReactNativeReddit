@@ -1,6 +1,4 @@
 const parsePost = (post) => {
-	const base = commonProps(post);
-
 	if (post.is_self) {
 		return selfPost(post);
 	}
@@ -49,10 +47,10 @@ const parsePost = (post) => {
 		return externalVideoPost(post, url);
 	} else {
 		return {
-			...base,
+			...commonProps(post),
 			type: "unhandled",
 			link: post.url,
-			thumbnail: parseThumbnail(post.thumbnail, post.preview, post.url),
+			thumbnail: parseThumbnail(post.thumbnail, post.preview), //, post.url),
 		};
 	}
 };
