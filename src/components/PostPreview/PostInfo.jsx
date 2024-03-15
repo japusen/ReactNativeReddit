@@ -70,6 +70,7 @@ const PostInfo = ({ post, onThumbnailClicked }) => {
 					<Text>{post.subreddit}</Text>
 					<Text>{post.author}</Text>
 					<Text>{post.score}</Text>
+					<Text>{post.time}</Text>
 					<Indicators
 						isNsfw={post.isNsfw}
 						isSpoiler={post.isSpoiler}
