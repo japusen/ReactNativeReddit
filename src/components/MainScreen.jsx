@@ -7,6 +7,7 @@ import { FeedContext } from "../contexts/FeedContext";
 import Feed from "./Feed";
 import ListingSortMenu from "./ListingSortMenu";
 import PostDetails from "./PostDetails";
+import LinkScreen from "./LinkScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -41,6 +42,13 @@ const MainScreen = (props) => {
 					),
 					headerRight: () => <ListingSortMenu />,
 				}}
+			/>
+			<Stack.Screen
+				name="Link"
+				options={{
+					headerShown: false,
+				}}
+				component={LinkScreen}
 			/>
 			<Stack.Screen name="Post" component={PostDetails} />
 		</Stack.Navigator>

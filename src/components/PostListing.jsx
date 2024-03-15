@@ -33,7 +33,7 @@ const PostListing = ({ posts, onEndReached }) => {
 			data={posts}
 			onEndReached={onEndReached}
 			ItemSeparatorComponent={ItemSeparator}
-			renderItem={({ item }) => <PostPreview item={item} />}
+			renderItem={({ item }) => <PostPreview post={item} />}
 			keyExtractor={(item) => item.id}
 			style={{
 				paddingTop: 10,

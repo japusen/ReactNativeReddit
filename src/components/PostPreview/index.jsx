@@ -1,9 +1,10 @@
 import { StyleSheet, View, Image } from "react-native";
-import { Text, Card, useTheme } from "react-native-paper";
+import { Card, useTheme } from "react-native-paper";
 import { memo, useState } from "react";
 import { WebView } from "react-native-webview";
 import { ResizeMode } from "expo-av";
 import VideoPlayer from "expo-video-player";
+import { useNavigation } from "@react-navigation/native";
 
 import PostInfo from "./PostInfo";
 import ImageCarousel from "./ImageCarousel";
@@ -28,45 +29,55 @@ const styles = StyleSheet.create({
 	externalVideo: { height: 500, backgroundColor: "black" },
 });
 
-export const PostPreview = ({ item }) => {
+export const PostPreview = ({ post }) => {
+	const navigation = useNavigation();
 	const [showMedia, setShowMedia] = useState(false);
 
 	const toggleShowMedia = () => {
 		setShowMedia(!showMedia);
 	};
 
-	switch (item.type) {
+	switch (post.type) {
 		case "self":
 			return (
-				<PostCard post={item} onThumbnailClicked={toggleShowMedia} />
+				<PostCard post={post} onThumbnailClicked={toggleShowMedia} />
 			);
 		case "gallery":
 			return (
-				<PostCard post={item} onThumbnailClicked={toggleShowMedia}>
-					{showMedia && <Gallery images={item.gallery} />}
+				<PostCard post={post} onThumbnailClicked={toggleShowMedia}>
+					{showMedia && <Gallery images={post.gallery} />}
 				</PostCard>
 			);
 		case "image":
 			return (
-				<PostCard post={item} onThumbnailClicked={toggleShowMedia}>
-					{showMedia && <RedditImage url={item.imageURL} />}
+				<PostCard post={post} onThumbnailClicked={toggleShowMedia}>
+					{showMedia && <RedditImage url={post.imageURL} />}
 				</PostCard>
 			);
 		case "reddit_video":
 			return (
-				<PostCard post={item} onThumbnailClicked={toggleShowMedia}>
-					{showMedia && <RedditVideo url={item.videoURL} />}
+				<PostCard post={post} onThumbnailClicked={toggleShowMedia}>
+					{showMedia && <RedditVideo url={post.videoURL} />}
 				</PostCard>
 			);
 		case "external_video":
 			return (
-				<PostCard post={item} onThumbnailClicked={toggleShowMedia}>
-					{showMedia && <ExternalVideo url={item.videoURL} />}
+				<PostCard post={post} onThumbnailClicked={toggleShowMedia}>
+					{showMedia && <ExternalVideo url={post.videoURL} />}
 				</PostCard>
 			);
 		case "link":
 		default:
-			return <PostCard post={item} onThumbnailClicked={() => {}} />;
+			return (
+				<PostCard
+					post={post}
+					onThumbnailClicked={() => {
+						navigation.navigate("Link", {
+							link: post.link,
+						});
+					}}
+				/>
+			);
 	}
 };
 
