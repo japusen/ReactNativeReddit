@@ -122,10 +122,10 @@ const Flair = ({ linkFlair }) => {
 					backgroundColor: linkFlair.backgroundColor,
 				}}
 			>
-				{linkFlair.richText.map((item) =>
+				{linkFlair.richText.map((item, index) =>
 					item.type === "emoji" ? (
 						<Image
-							key={item.type + item.value}
+							key={index}
 							style={styles.flairEmoji}
 							source={{
 								uri: item.value,
