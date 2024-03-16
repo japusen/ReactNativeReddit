@@ -8,7 +8,7 @@ const colors = {
 	sticky: "green",
 	locked: "#c5a939",
 	nsfw: "red",
-	spoiler: "orange",
+	spoiler: "#fc6a03",
 };
 
 const indicator = {
