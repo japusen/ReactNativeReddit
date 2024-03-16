@@ -61,7 +61,8 @@ const commonProps = (post) => {
 		title: post.title,
 		subreddit: post.subreddit,
 		author: post.author,
-		score: post.score,
+		score: formatNumberInThousands(post.score, "point"),
+		numComments: formatNumberInThousands(post.num_comments, "comment"),
 		isNsfw: post.over_18,
 		isSpoiler: post.spoiler,
 		isLocked: post.locked,
@@ -231,6 +232,18 @@ const formatTime = (time) => {
 		return `${minutes}m ago`;
 	} else {
 		return `${seconds}s ago`;
+	}
+};
+
+const formatNumberInThousands = (value, name) => {
+	const valueInThousands = Math.round((value / 1000) * 10) / 10;
+
+	if (valueInThousands > 1) {
+		return `${valueInThousands}k ${name}s`;
+	} else if (value === 1) {
+		return `1 ${name}`;
+	} else {
+		return `${value} ${name}s`;
 	}
 };
 
