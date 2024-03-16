@@ -14,6 +14,13 @@ const styles = StyleSheet.create({
 		marginHorizontal: 8,
 		overflow: "hidden",
 	},
+	crossPostContainer: {
+		marginHorizontal: 10,
+		marginBottom: 10,
+		borderRadius: 10,
+		borderStyle: "solid",
+		borderWidth: 1,
+	},
 	mediaContainer: {
 		marginHorizontal: 8,
 		marginBottom: 8,
@@ -29,7 +36,7 @@ const styles = StyleSheet.create({
 	externalVideo: { height: 500, backgroundColor: "black" },
 });
 
-export const PostPreview = ({ post }) => {
+export const PostPreview = ({ post, isCrossPost = false }) => {
 	const navigation = useNavigation();
 	const [showMedia, setShowMedia] = useState(false);
 
@@ -40,29 +47,59 @@ export const PostPreview = ({ post }) => {
 	switch (post.type) {
 		case "self":
 			return (
-				<PostCard post={post} onThumbnailClicked={toggleShowMedia} />
+				<PostCard
+					post={post}
+					isCrossPost={isCrossPost}
+					onThumbnailClicked={() => {}}
+				/>
+			);
+		case "cross-post":
+			return (
+				<PostCard
+					post={post}
+					isCrossPost={isCrossPost}
+					onThumbnailClicked={() => {}}
+				>
+					<PostPreview post={post.innerPost} isCrossPost={true} />
+				</PostCard>
 			);
 		case "gallery":
 			return (
-				<PostCard post={post} onThumbnailClicked={toggleShowMedia}>
+				<PostCard
+					post={post}
+					isCrossPost={isCrossPost}
+					onThumbnailClicked={toggleShowMedia}
+				>
 					{showMedia && <Gallery images={post.gallery} />}
 				</PostCard>
 			);
 		case "image":
 			return (
-				<PostCard post={post} onThumbnailClicked={toggleShowMedia}>
+				<PostCard
+					post={post}
+					isCrossPost={isCrossPost}
+					onThumbnailClicked={toggleShowMedia}
+				>
 					{showMedia && <RedditImage url={post.imageURL} />}
 				</PostCard>
 			);
 		case "reddit_video":
 			return (
-				<PostCard post={post} onThumbnailClicked={toggleShowMedia}>
+				<PostCard
+					post={post}
+					isCrossPost={isCrossPost}
+					onThumbnailClicked={toggleShowMedia}
+				>
 					{showMedia && <RedditVideo url={post.videoURL} />}
 				</PostCard>
 			);
 		case "external_video":
 			return (
-				<PostCard post={post} onThumbnailClicked={toggleShowMedia}>
+				<PostCard
+					post={post}
+					isCrossPost={isCrossPost}
+					onThumbnailClicked={toggleShowMedia}
+				>
 					{showMedia && <ExternalVideo url={post.videoURL} />}
 				</PostCard>
 			);
@@ -71,6 +108,7 @@ export const PostPreview = ({ post }) => {
 			return (
 				<PostCard
 					post={post}
+					isCrossPost={isCrossPost}
 					onThumbnailClicked={() => {
 						navigation.navigate("Link", {
 							link: post.link,
@@ -81,8 +119,23 @@ export const PostPreview = ({ post }) => {
 	}
 };
 
-const PostCard = ({ post, onThumbnailClicked, children }) => {
+const PostCard = ({ post, onThumbnailClicked, children, isCrossPost }) => {
 	const theme = useTheme();
+
+	const crossPostStyle = {
+		...styles.crossPostContainer,
+		backgroundColor: theme.colors.surfaceVariant,
+		borderColor: theme.colors.primary,
+	};
+
+	if (isCrossPost) {
+		return (
+			<View style={crossPostStyle}>
+				<PostInfo post={post} onThumbnailClicked={onThumbnailClicked} />
+				{children}
+			</View>
+		);
+	}
 
 	return (
 		<Card style={[styles.card, { backgroundColor: theme.colors.surface }]}>

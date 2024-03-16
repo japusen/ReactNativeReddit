@@ -39,6 +39,8 @@ const PostInfo = ({ post, onThumbnailClicked }) => {
 
 	const authorStyle = { color: theme.colors.onSurface };
 
+	const hasThumbnail = post.type !== "self" && post.type !== "cross-post";
+
 	return (
 		<Pressable
 			onPress={() => {
@@ -48,7 +50,7 @@ const PostInfo = ({ post, onThumbnailClicked }) => {
 			}}
 		>
 			<View style={styles.postHeader}>
-				{post.type !== "self" && (
+				{hasThumbnail && (
 					<Thumbnail
 						postType={post.type}
 						url={post.thumbnail}

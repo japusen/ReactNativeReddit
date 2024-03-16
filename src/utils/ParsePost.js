@@ -7,6 +7,10 @@ const parsePost = (post) => {
 		return galleryPost(post);
 	}
 
+	if (post.crosspost_parent_list) {
+		return crossPost(post);
+	}
+
 	switch (post.post_hint) {
 		case "image":
 			return imagePost(post);
@@ -58,7 +62,7 @@ const parsePost = (post) => {
 const commonProps = (post) => {
 	return {
 		id: post.id,
-		title: post.title,
+		title: post.title.trim(),
 		subreddit: post.subreddit,
 		author: post.author,
 		score: formatNumberInThousands(post.score, "point"),
@@ -135,6 +139,14 @@ const linkPost = (post) => {
 		type: "link",
 		thumbnail: parseThumbnail(post.thumbnail, post.preview),
 		link: post.url,
+	};
+};
+
+const crossPost = (post) => {
+	return {
+		...commonProps(post),
+		type: "cross-post",
+		innerPost: parsePost(post.crosspost_parent_list[0]),
 	};
 };
 
