@@ -1,5 +1,5 @@
-import { StyleSheet, View, Image, Pressable } from "react-native";
-import { Icon, IconButton } from "react-native-paper";
+import { StyleSheet, View, Image, Pressable, Text } from "react-native";
+import { Icon } from "react-native-paper";
 
 const styles = StyleSheet.create({
 	thumbnailContainer: {
@@ -10,16 +10,22 @@ const styles = StyleSheet.create({
 		position: "relative",
 	},
 	thumbnailImage: { flex: 1 },
-	thumbnailPlaceholder: {
-		overflow: "hidden",
-		borderRadius: 10,
-		height: 50,
-		width: 50,
+	iconContainer: {
+		position: "absolute",
+		bottom: 2,
+		left: 4,
+		padding: 2,
 		backgroundColor: "black",
+		borderRadius: 5,
+		display: "flex",
+		flexDirection: "row",
+		alignItems: "center",
+		gap: 2,
 	},
+	domainText: { color: "white", fontSize: 10 },
 });
 
-const Thumbnail = ({ postType, url, onPress }) => {
+const Thumbnail = ({ postType, url, domain, onPress }) => {
 	const iconName = () => {
 		switch (postType) {
 			case "image":
@@ -34,10 +40,14 @@ const Thumbnail = ({ postType, url, onPress }) => {
 		}
 	};
 
-	if (url) {
-		return (
-			<Pressable onPress={onPress}>
-				<View style={styles.thumbnailContainer}>
+	const containerStyle = url
+		? styles.thumbnailContainer
+		: { ...styles.thumbnailContainer, backgroundColor: "black" };
+
+	return (
+		<Pressable onPress={onPress}>
+			<View style={containerStyle}>
+				{url && (
 					<Image
 						resizeMode="cover"
 						style={styles.thumbnailImage}
@@ -45,42 +55,28 @@ const Thumbnail = ({ postType, url, onPress }) => {
 							uri: url,
 						}}
 					/>
-					<View
-						style={{
-							position: "absolute",
-							top: 5,
-							left: 5,
-							backgroundColor: "black",
-							borderRadius: 5,
-							padding: 2,
-						}}
-					>
-						<Icon
-							source={iconName()}
-							size={18}
-							color="white"
-						></Icon>
-					</View>
+				)}
+				<View style={styles.iconContainer}>
+					<Icon source={iconName()} size={18} color="white" />
+					{(!url || postType === "link") && (
+						<TruncatedDomain domain={domain} />
+					)}
 				</View>
-			</Pressable>
-		);
-	}
+			</View>
+		</Pressable>
+	);
+};
 
+const TruncatedDomain = ({ domain }) => {
 	return (
-		<View style={styles.thumbnailPlaceholder}>
-			<IconButton
-				icon={iconName()}
-				iconColor="white"
-				size={20}
-				onPress={onPress}
-				style={{
-					flex: 1,
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "center",
-				}}
-			/>
-		</View>
+		<Text
+			style={styles.domainText}
+			numberOfLines={1}
+			ellipsizeMode="tail"
+			maxWidth={70}
+		>
+			{domain}
+		</Text>
 	);
 };
 

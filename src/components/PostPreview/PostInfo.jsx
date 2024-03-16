@@ -52,6 +52,7 @@ const PostInfo = ({ post, onThumbnailClicked }) => {
 					<Thumbnail
 						postType={post.type}
 						url={post.thumbnail}
+						domain={post.domain}
 						onPress={onThumbnailClicked}
 					/>
 				)}
