@@ -11,7 +11,6 @@ import PostOptions from "./PostOptions";
 const styles = StyleSheet.create({
 	postHeader: {
 		padding: 8,
-		paddingBottom: 0,
 		display: "flex",
 		flexDirection: "row",
 		gap: 10,

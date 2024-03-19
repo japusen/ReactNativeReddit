@@ -2,12 +2,6 @@ import { StyleSheet, View, Pressable } from "react-native";
 import { Icon, useTheme } from "react-native-paper";
 
 const styles = StyleSheet.create({
-	row: {
-		display: "flex",
-		flexDirection: "row",
-		flexWrap: "wrap",
-		gap: 10,
-	},
 	centeredRow: {
 		display: "flex",
 		flexDirection: "row",
@@ -19,6 +13,8 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		flex: 1,
 		padding: 8,
+		borderRadius: 10,
+		overflow: "hidden",
 	},
 });
 
