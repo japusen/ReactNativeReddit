@@ -19,6 +19,9 @@ const RedditVideo = ({ url, height }) => {
 				exitMute: () => setIsMute(!isMute),
 				isMute,
 			}}
+			fullscreen={{
+				visible: false,
+			}}
 			style={{ height }}
 		/>
 	);
