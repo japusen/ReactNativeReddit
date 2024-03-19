@@ -16,16 +16,23 @@ const parsePost = (post) => {
 			return imagePost(post);
 		case "hosted:video":
 			const dashURL = post.media.reddit_video.dash_url;
-			return redditVideoPost(post, dashURL);
+			const hostedHeight = post.media.reddit_video.height
+				? calculateVideoHeight(post.media.reddit_video.height)
+				: 500;
+			return redditVideoPost(post, dashURL, hostedHeight);
 		case "rich:video":
 			const extractedURL = extractVideoSrcFromHTML(
 				post.media.oembed.html
 			);
-			return externalVideoPost(post, extractedURL);
+			const externalHeight = post.media.oembed.height
+				? calculateVideoHeight(post.media.oembed.height)
+				: 500;
+			return externalVideoPost(post, extractedURL, externalHeight);
 		case "link":
 			if (post.domain === "i.imgur.com" && post.url.includes(".gifv")) {
 				const url = post.url.replace(".gifv", ".mp4");
-				return redditVideoPost(post, url);
+				const imgurHeight = 500;
+				return redditVideoPost(post, url, imgurHeight);
 			}
 			return linkPost(post);
 		default:
@@ -35,7 +42,10 @@ const parsePost = (post) => {
 	// post_hint not used in some subreddits ex: anime_irl
 	if (post.is_reddit_media_domain && post.is_video) {
 		const url = post.media.reddit_video.dash_url;
-		return redditVideoPost(post, url);
+		const hostedHeight = post.media.reddit_video.height
+			? calculateVideoHeight(post.media.reddit_video.height)
+			: 500;
+		return redditVideoPost(post, url, hostedHeight);
 	} else if (post.is_reddit_media_domain && !post.is_video) {
 		return imagePost(post);
 	} else if (post.domain === "youtube.com") {
@@ -48,7 +58,7 @@ const parsePost = (post) => {
 	) {
 		const id = post.url.split("?viewkey=")[1];
 		const url = `https://www.pornhub.com/embed/${id}`;
-		return externalVideoPost(post, url);
+		return externalVideoPost(post, url, 340);
 	} else {
 		return {
 			...commonProps(post),
@@ -115,21 +125,23 @@ const imagePost = (post) => {
 	};
 };
 
-const redditVideoPost = (post, url) => {
+const redditVideoPost = (post, url, height) => {
 	return {
 		...commonProps(post),
 		type: "reddit_video",
 		thumbnail: parseThumbnail(post.thumbnail, post.preview),
 		videoURL: url,
+		height,
 	};
 };
 
-const externalVideoPost = (post, url) => {
+const externalVideoPost = (post, url, height) => {
 	return {
 		...commonProps(post),
 		type: "external_video",
 		thumbnail: parseThumbnail(post.thumbnail, post.preview),
 		videoURL: url,
+		height,
 	};
 };
 
@@ -257,6 +269,13 @@ const formatNumberInThousands = (value, name) => {
 	} else {
 		return `${value} ${name}s`;
 	}
+};
+
+const minVideoHeight = 300;
+const maxVideoHeight = 500;
+
+const calculateVideoHeight = (height = 0) => {
+	return Math.min(Math.max(height, minVideoHeight), maxVideoHeight);
 };
 
 export default parsePost;

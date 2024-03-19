@@ -1,13 +1,16 @@
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Card, useTheme } from "react-native-paper";
 import { memo, useState } from "react";
-import { WebView } from "react-native-webview";
-import { ResizeMode } from "expo-av";
-import VideoPlayer from "expo-video-player";
 import { useNavigation } from "@react-navigation/native";
+import { useContext } from "react";
+
+import { CrossPostContext } from "../../contexts/CrossPostContext";
 
 import PostInfo from "./PostInfo";
-import ImageCarousel from "./ImageCarousel";
+import ImageCarousel from "../Media/ImageCarousel";
+import RedditImage from "../Media/RedditImage";
+import RedditVideo from "../Media/RedditVideo";
+import ExternalVideo from "../Media/ExternalVideo";
 
 const styles = StyleSheet.create({
 	card: {
@@ -29,97 +32,110 @@ const styles = StyleSheet.create({
 		overflow: "hidden",
 		borderRadius: 10,
 	},
-	fullImage: {
-		flex: 1,
-	},
-	redditVideo: { height: 500 },
-	externalVideo: { height: 500, backgroundColor: "black" },
 });
 
-export const PostPreview = ({ post, isCrossPost = false }) => {
+export const PostPreview = ({ post }) => {
+	switch (post.type) {
+		case "self":
+			return <SelfPost post={post} />;
+		case "cross-post":
+			return <CrossPost post={post} />;
+		case "gallery":
+			// card and mediaContainer each have horizontal margin of 8
+			const margin = 2 * 8 + 2 * 8;
+			return <GalleryPost post={post} margin={margin} />;
+		case "image":
+			return <ImagePost post={post} />;
+		case "reddit_video":
+			return <HostedVideoPost post={post} />;
+		case "external_video":
+			return <ExternalVideoPost post={post} />;
+		case "link":
+		default:
+			return <LinkPost post={post} />;
+	}
+};
+
+const SelfPost = ({ post }) => {
+	return <PostCard post={post} onThumbnailClicked={() => {}} />;
+};
+
+const GalleryPost = ({ post, margin }) => {
+	return (
+		<MediaPost post={post}>
+			<ImageCarousel images={post.gallery} margin={margin} />
+		</MediaPost>
+	);
+};
+
+const ImagePost = ({ post }) => {
+	return (
+		<MediaPost post={post}>
+			<RedditImage url={post.imageURL} />
+		</MediaPost>
+	);
+};
+
+const HostedVideoPost = ({ post }) => {
+	return (
+		<MediaPost post={post} additionalStyle={{ height: post.height }}>
+			<RedditVideo url={post.videoURL} height={post.height} />
+		</MediaPost>
+	);
+};
+
+const ExternalVideoPost = ({ post }) => {
+	return (
+		<MediaPost post={post} additionalStyle={{ height: post.height }}>
+			<ExternalVideo url={post.videoURL} height={post.height} />
+		</MediaPost>
+	);
+};
+
+const LinkPost = ({ post }) => {
 	const navigation = useNavigation();
+
+	return (
+		<PostCard
+			post={post}
+			onThumbnailClicked={() => {
+				navigation.navigate("Link", {
+					link: post.link,
+				});
+			}}
+		/>
+	);
+};
+
+const CrossPost = ({ post }) => {
+	return (
+		<PostCard post={post} onThumbnailClicked={() => {}}>
+			<CrossPostContext.Provider value={true}>
+				<PostPreview post={post.innerPost} />
+			</CrossPostContext.Provider>
+		</PostCard>
+	);
+};
+
+const MediaPost = ({ post, children, additionalStyle = null }) => {
 	const [showMedia, setShowMedia] = useState(false);
 
 	const toggleShowMedia = () => {
 		setShowMedia(!showMedia);
 	};
 
-	switch (post.type) {
-		case "self":
-			return (
-				<PostCard
-					post={post}
-					isCrossPost={isCrossPost}
-					onThumbnailClicked={() => {}}
-				/>
-			);
-		case "cross-post":
-			return (
-				<PostCard
-					post={post}
-					isCrossPost={isCrossPost}
-					onThumbnailClicked={() => {}}
-				>
-					<PostPreview post={post.innerPost} isCrossPost={true} />
-				</PostCard>
-			);
-		case "gallery":
-			return (
-				<PostCard
-					post={post}
-					isCrossPost={isCrossPost}
-					onThumbnailClicked={toggleShowMedia}
-				>
-					{showMedia && <Gallery images={post.gallery} />}
-				</PostCard>
-			);
-		case "image":
-			return (
-				<PostCard
-					post={post}
-					isCrossPost={isCrossPost}
-					onThumbnailClicked={toggleShowMedia}
-				>
-					{showMedia && <RedditImage url={post.imageURL} />}
-				</PostCard>
-			);
-		case "reddit_video":
-			return (
-				<PostCard
-					post={post}
-					isCrossPost={isCrossPost}
-					onThumbnailClicked={toggleShowMedia}
-				>
-					{showMedia && <RedditVideo url={post.videoURL} />}
-				</PostCard>
-			);
-		case "external_video":
-			return (
-				<PostCard
-					post={post}
-					isCrossPost={isCrossPost}
-					onThumbnailClicked={toggleShowMedia}
-				>
-					{showMedia && <ExternalVideo url={post.videoURL} />}
-				</PostCard>
-			);
-		case "link":
-		default:
-			return (
-				<PostCard
-					post={post}
-					isCrossPost={isCrossPost}
-					onThumbnailClicked={() => {
-						navigation.navigate("Link", {
-							link: post.link,
-						});
-					}}
-				/>
-			);
-	}
+	const mediaContainerStyle = additionalStyle
+		? [styles.mediaContainer, additionalStyle]
+		: styles.mediaContainer;
+
+	return (
+		<PostCard post={post} onThumbnailClicked={toggleShowMedia}>
+			{showMedia && <View style={mediaContainerStyle}>{children}</View>}
+		</PostCard>
+	);
 };
 
-const PostCard = ({ post, onThumbnailClicked, children, isCrossPost }) => {
+const PostCard = ({ post, onThumbnailClicked, children }) => {
 	const theme = useTheme();
 
 	const crossPostStyle = {
@@ -127,6 +143,8 @@ const PostCard = ({ post, onThumbnailClicked, children, isCrossPost }) => {
 		backgroundColor: theme.colors.surfaceVariant,
 		borderColor: theme.colors.primary,
 	};
+
+	const isCrossPost = useContext(CrossPostContext);
 
 	if (isCrossPost) {
 		return (
@@ -142,76 +160,6 @@ const PostCard = ({ post, onThumbnailClicked, children, isCrossPost }) => {
 			<PostInfo post={post} onThumbnailClicked={onThumbnailClicked} />
 			{children}
 		</Card>
-	);
-};
-
-const MediaContainer = ({ children, additionalStyle = null }) => {
-	const containerStyle = additionalStyle
-		? [styles.mediaContainer, additionalStyle]
-		: styles.mediaContainer;
-
-	return <View style={containerStyle}>{children}</View>;
-};
-
-const RedditImage = ({ url }) => {
-	return (
-		<MediaContainer>
-			<Image
-				resizeMode="contain"
-				style={styles.fullImage}
-				source={{
-					uri: url,
-				}}
-			/>
-		</MediaContainer>
-	);
-};
-
-const RedditVideo = ({ url }) => {
-	const [isMute, setIsMute] = useState(false);
-	return (
-		<MediaContainer>
-			<VideoPlayer
-				videoProps={{
-					shouldPlay: true,
-					resizeMode: ResizeMode.CONTAIN,
-					source: {
-						uri: url,
-					},
-					isMuted: isMute,
-				}}
-				mute={{
-					enterMute: () => setIsMute(!isMute),
-					exitMute: () => setIsMute(!isMute),
-					isMute,
-				}}
-				style={styles.redditVideo}
-			/>
-		</MediaContainer>
-	);
-};
-
-const ExternalVideo = ({ url }) => {
-	return (
-		<MediaContainer>
-			<WebView
-				allowsFullscreenVideo
-				allowsInlineMediaPlayback
-				mediaPlaybackRequiresUserAction
-				source={{ uri: url }}
-				style={styles.externalVideo}
-			/>
-		</MediaContainer>
-	);
-};
-
-const Gallery = ({ images }) => {
-	// card and mediaContainer each have horizontal margin of 8
-	const margin = 2 * 8 + 2 * 8;
-	return (
-		<MediaContainer additionalStyle={{ position: "relative" }}>
-			<ImageCarousel images={images} margin={margin} />
-		</MediaContainer>
 	);
 };
 
