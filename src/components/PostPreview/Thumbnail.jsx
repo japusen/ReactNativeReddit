@@ -58,7 +58,9 @@ const Thumbnail = ({ postType, url, domain, onPress }) => {
 				)}
 				<View style={styles.iconContainer}>
 					<Icon source={iconName()} size={18} color="white" />
-					{(!url || postType === "link") && (
+					{(!url ||
+						postType === "link" ||
+						postType === "external_video") && (
 						<TruncatedDomain domain={domain} />
 					)}
 				</View>
