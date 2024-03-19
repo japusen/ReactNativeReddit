@@ -1,4 +1,3 @@
-import { Text } from "react-native-paper";
 import { WebView } from "react-native-webview";
 
 const ExternalVideo = ({ url, height }) => {
@@ -13,7 +12,6 @@ const ExternalVideo = ({ url, height }) => {
 				source={{ uri: url }}
 				style={videoStyle}
 			/>
-			<Text>{height}</Text>
 		</>
 	);
 };
