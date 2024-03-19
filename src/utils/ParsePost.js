@@ -15,50 +15,31 @@ const parsePost = (post) => {
 		case "image":
 			return imagePost(post);
 		case "hosted:video":
-			const dashURL = post.media.reddit_video.dash_url;
-			const hostedHeight = post.media.reddit_video.height
-				? calculateVideoHeight(post.media.reddit_video.height)
-				: 500;
-			return redditVideoPost(post, dashURL, hostedHeight);
+			return parseRedditVideo(post);
 		case "rich:video":
-			const extractedURL = extractVideoSrcFromHTML(
-				post.media.oembed.html
-			);
-			const externalHeight = post.media.oembed.height
-				? calculateVideoHeight(post.media.oembed.height)
-				: 500;
-			return externalVideoPost(post, extractedURL, externalHeight);
+			return parseExternalVideo(post);
 		case "link":
-			if (post.domain === "i.imgur.com" && post.url.includes(".gifv")) {
-				const url = post.url.replace(".gifv", ".mp4");
-				const imgurHeight = 500;
-				return redditVideoPost(post, url, imgurHeight);
-			}
-			return linkPost(post);
+			return parseLink(post);
 		default:
 			break;
 	}
 
 	// post_hint not used in some subreddits ex: anime_irl
 	if (post.is_reddit_media_domain && post.is_video) {
-		const url = post.media.reddit_video.dash_url;
-		const hostedHeight = post.media.reddit_video.height
-			? calculateVideoHeight(post.media.reddit_video.height)
-			: 500;
-		return redditVideoPost(post, url, hostedHeight);
-	} else if (post.is_reddit_media_domain && !post.is_video) {
+		return parseRedditVideo(post);
+	} else if (post.is_reddit_media_domain) {
 		return imagePost(post);
 	} else if (post.domain === "youtube.com") {
 		const id = post.url.split("?v=")[1];
 		const url = `https://www.youtube.com/embed/${id}`;
-		return externalVideoPost(post, url);
+		return externalVideoPost(post, url, 16 / 9);
 	} else if (
 		post.domain.includes("pornhub.com") &&
 		post.url.includes("?viewkey=")
 	) {
 		const id = post.url.split("?viewkey=")[1];
 		const url = `https://www.pornhub.com/embed/${id}`;
-		return externalVideoPost(post, url, 340);
+		return externalVideoPost(post, url, 16 / 9);
 	} else {
 		return {
 			...commonProps(post),
@@ -117,31 +98,35 @@ const galleryPost = (post) => {
 };
 
 const imagePost = (post) => {
+	const width = post.preview.images[0].source.width;
+	const height = post.preview.images[0].source.height;
+	const aspectRatio = calculateAspectRatio(width, height);
 	return {
 		...commonProps(post),
 		type: "image",
 		thumbnail: parseThumbnail(post.thumbnail, post.preview, post.url),
 		imageURL: post.url,
+		aspectRatio,
 	};
 };
 
-const redditVideoPost = (post, url, height) => {
+const redditVideoPost = (post, url, aspectRatio = 1) => {
 	return {
 		...commonProps(post),
 		type: "reddit_video",
 		thumbnail: parseThumbnail(post.thumbnail, post.preview),
 		videoURL: url,
-		height,
+		aspectRatio,
 	};
 };
 
-const externalVideoPost = (post, url, height) => {
+const externalVideoPost = (post, url, aspectRatio = 1) => {
 	return {
 		...commonProps(post),
 		type: "external_video",
 		thumbnail: parseThumbnail(post.thumbnail, post.preview),
 		videoURL: url,
-		height,
+		aspectRatio,
 	};
 };
 
@@ -160,6 +145,34 @@ const crossPost = (post) => {
 		type: "cross-post",
 		innerPost: parsePost(post.crosspost_parent_list[0]),
 	};
+};
+
+const parseRedditVideo = (post) => {
+	const dashURL = post.media.reddit_video.dash_url;
+
+	const hostedAspectRatio = calculateAspectRatio(
+		post.media.reddit_video.width,
+		post.media.reddit_video.height
+	);
+	return redditVideoPost(post, dashURL, hostedAspectRatio);
+};
+
+const parseExternalVideo = (post) => {
+	const extractedURL = extractVideoSrcFromHTML(post.media.oembed.html);
+
+	const externalAspectRatio = calculateAspectRatio(
+		post.media.oembed.width,
+		post.media.oembed.height
+	);
+	return externalVideoPost(post, extractedURL, externalAspectRatio);
+};
+
+const parseLink = (post) => {
+	if (post.domain === "i.imgur.com" && post.url.includes(".gifv")) {
+		const url = post.url.replace(".gifv", ".mp4");
+		return redditVideoPost(post, url);
+	}
+	return linkPost(post);
 };
 
 const parseGalleryImages = (metaData, galleryData) => {
@@ -271,11 +284,8 @@ const formatNumberInThousands = (value, name) => {
 	}
 };
 
-const minVideoHeight = 300;
-const maxVideoHeight = 500;
-
-const calculateVideoHeight = (height = 0) => {
-	return Math.min(Math.max(height, minVideoHeight), maxVideoHeight);
+const calculateAspectRatio = (width, height) => {
+	return width && height ? width / height : 1;
 };
 
 export default parsePost;
