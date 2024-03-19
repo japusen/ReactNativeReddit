@@ -69,25 +69,28 @@ const GalleryPost = ({ post, margin }) => {
 };
 
 const ImagePost = ({ post }) => {
+	const height = calculateMediaHeight(post.aspectRatio);
 	return (
-		<MediaPost post={post}>
+		<MediaPost post={post} additionalStyle={{ height }}>
 			<RedditImage url={post.imageURL} />
 		</MediaPost>
 	);
 };
 
 const HostedVideoPost = ({ post }) => {
+	const height = calculateMediaHeight(post.aspectRatio);
 	return (
-		<MediaPost post={post} additionalStyle={{ height: post.height }}>
-			<RedditVideo url={post.videoURL} height={post.height} />
+		<MediaPost post={post} additionalStyle={{ height }}>
+			<RedditVideo url={post.videoURL} height={height} />
 		</MediaPost>
 	);
 };
 
 const ExternalVideoPost = ({ post }) => {
+	const height = calculateMediaHeight(post.aspectRatio);
 	return (
-		<MediaPost post={post} additionalStyle={{ height: post.height }}>
-			<ExternalVideo url={post.videoURL} height={post.height} />
+		<MediaPost post={post} additionalStyle={{ height }}>
+			<ExternalVideo url={post.videoURL} height={height} />
 		</MediaPost>
 	);
 };
@@ -115,6 +118,10 @@ const CrossPost = ({ post }) => {
 			</CrossPostContext.Provider>
 		</PostCard>
 	);
+};
+
+const calculateMediaHeight = (aspectRatio) => {
+	return Math.min(styles.mediaContainer.height / aspectRatio, 600);
 };
 
 const MediaPost = ({ post, children, additionalStyle = null }) => {
