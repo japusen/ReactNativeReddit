@@ -1,14 +1,17 @@
+import { useState } from "react";
 import { StyleSheet, View, Pressable } from "react-native";
-import { Text, useTheme } from "react-native-paper";
+import { Text, Icon, useTheme } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 
 import Thumbnail from "./Thumbnail";
 import Indicators from "./Indicators";
 import Flair from "./Flair";
+import PostOptions from "./PostOptions";
 
 const styles = StyleSheet.create({
 	postHeader: {
 		padding: 8,
+		paddingBottom: 0,
 		display: "flex",
 		flexDirection: "row",
 		gap: 10,
@@ -30,6 +33,8 @@ const PostInfo = ({ post, onThumbnailClicked }) => {
 	const navigation = useNavigation();
 	const theme = useTheme();
 
+	const [showMoreOptions, setShowMoreOptions] = useState(false);
+
 	const titleStyle = {
 		color: theme.colors.primary,
 		fontSize: 16,
@@ -44,10 +49,14 @@ const PostInfo = ({ post, onThumbnailClicked }) => {
 	return (
 		<Pressable
 			onPress={() => {
-				navigation.navigate("Post", {
+				navigation.push("Post", {
 					postID: post.id,
 				});
 			}}
+			onLongPress={() => {
+				setShowMoreOptions(!showMoreOptions);
+			}}
+			delayLongPress={100}
 		>
 			<View style={styles.postHeader}>
 				{hasThumbnail && (
@@ -85,6 +94,16 @@ const PostInfo = ({ post, onThumbnailClicked }) => {
 					{/* <Text>Type: {post.type}</Text> */}
 				</View>
 			</View>
+
+			{showMoreOptions && (
+				<PostOptions
+					onAccountPressed={() => console.log("account")}
+					onCommunityPressed={() => console.log("community")}
+					onBrowserPressed={() => console.log("web")}
+					onSharePressed={() => console.log("share")}
+					onFilterPressed={() => console.log("filter")}
+				/>
+			)}
 		</Pressable>
 	);
 };
