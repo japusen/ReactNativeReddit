@@ -7,7 +7,7 @@ import { NavigationContainer } from "@react-navigation/native";
 
 import { getAccessToken } from "../requests/AccessToken";
 import { TokenContext } from "../contexts/TokenContext";
-import DrawerNav from "./DrawerNav";
+import DrawerNav from "./Navigators/DrawerNav";
 
 const styles = StyleSheet.create({
 	container: {

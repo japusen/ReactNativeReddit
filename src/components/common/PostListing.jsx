@@ -2,7 +2,7 @@ import { StyleSheet, View } from "react-native";
 import { FlatList } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 
-import PostPreview from "./PostPreview";
+import PostPreview from "../PostPreview";
 
 const styles = StyleSheet.create({
 	containerCentered: {

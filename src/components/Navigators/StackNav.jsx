@@ -3,15 +3,15 @@ import { useTheme } from "react-native-paper";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Appbar } from "react-native-paper";
 
-import { FeedContext } from "../contexts/FeedContext";
-import Feed from "./Feed";
-import ListingSortMenu from "./ListingSortMenu";
-import PostDetails from "./PostDetails";
-import LinkScreen from "./LinkScreen";
+import { FeedContext } from "../../contexts/FeedContext";
+import FeedScreen from "../FeedScreen";
+import ListingSortMenu from "../SortMenus/ListingSortMenu";
+import PostDetails from "../PostDetails";
+import LinkScreen from "../LinkScreen";
 
 const Stack = createNativeStackNavigator();
 
-const MainScreen = (props) => {
+const StackNav = ({ navigation }) => {
 	const theme = useTheme();
 	const { feed } = useContext(FeedContext);
 
@@ -27,7 +27,7 @@ const MainScreen = (props) => {
 		>
 			<Stack.Screen
 				name="Feed"
-				component={Feed}
+				component={FeedScreen}
 				options={{
 					title: feed,
 					headerStyle: {
@@ -36,7 +36,7 @@ const MainScreen = (props) => {
 					headerLeft: () => (
 						<Appbar.Action
 							icon="menu"
-							onPress={props.navigation.openDrawer}
+							onPress={navigation.openDrawer}
 							style={{ margin: 0 }}
 						/>
 					),
@@ -55,4 +55,4 @@ const MainScreen = (props) => {
 	);
 };
 
-export default MainScreen;
+export default StackNav;

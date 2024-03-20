@@ -6,9 +6,9 @@ import { useDebounce } from "use-debounce";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigation, DrawerActions } from "@react-navigation/native";
 
-import { FeedContext } from "../contexts/FeedContext";
-import { TokenContext } from "../contexts/TokenContext";
-import { getSubredditAutocomplete } from "../requests/SubredditAutocomplete";
+import { FeedContext } from "../../contexts/FeedContext";
+import { TokenContext } from "../../contexts/TokenContext";
+import { getSubredditAutocomplete } from "../../requests/SubredditAutocomplete";
 
 const styles = StyleSheet.create({
 	container: {

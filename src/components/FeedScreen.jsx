@@ -9,7 +9,7 @@ import {
 } from "react-native-paper";
 
 import { TokenContext } from "../contexts/TokenContext";
-import PostListing from "./PostListing";
+import PostListing from "./common/PostListing";
 import { FeedContext } from "../contexts/FeedContext";
 import { useInfinitePosts } from "../hooks/useInfinitePosts";
 
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
 	},
 });
 
-const Feed = () => {
+const FeedScreen = () => {
 	const theme = useTheme();
 	const token = useContext(TokenContext);
 	const { feed, sort, topSort } = useContext(FeedContext);
@@ -71,4 +71,4 @@ const Feed = () => {
 	);
 };
 
-export default Feed;
+export default FeedScreen;
