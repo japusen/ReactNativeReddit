@@ -61,12 +61,15 @@ const FeedScreen = () => {
 	return (
 		<Surface style={styles.container}>
 			<PostListing posts={posts} onEndReached={fetchMorePosts} />
-			<Banner
-				visible={isFetchingNextPage}
-				style={{ backgroundColor: theme.colors.primaryContainer }}
-			>
-				Loading more posts
-			</Banner>
+			<ActivityIndicator
+				animating={isFetchingNextPage}
+				size={40}
+				style={{
+					position: "absolute",
+					bottom: 10,
+					left: "45%",
+				}}
+			/>
 		</Surface>
 	);
 };
