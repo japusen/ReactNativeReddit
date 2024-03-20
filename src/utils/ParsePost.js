@@ -87,6 +87,9 @@ const selfPost = (post) => {
 
 const galleryPost = (post) => {
 	const gallery = parseGalleryImages(post.media_metadata, post.gallery_data);
+	const aspectRatios = gallery.map((item) => item.aspectRatio);
+	const minAspectRatio = Math.min(...aspectRatios);
+
 	return {
 		...commonProps(post),
 		type: "gallery",
@@ -94,13 +97,17 @@ const galleryPost = (post) => {
 			? post.thumbnail
 			: gallery[0].url,
 		gallery,
+		aspectRatio: minAspectRatio,
 	};
 };
 
 const imagePost = (post) => {
-	const width = post.preview.images[0].source.width;
-	const height = post.preview.images[0].source.height;
-	const aspectRatio = calculateAspectRatio(width, height);
+	const aspectRatio = post.preview
+		? calculateAspectRatio(
+				post.preview.images[0].source.width,
+				post.preview.images[0].source.height
+		  )
+		: 1;
 	return {
 		...commonProps(post),
 		type: "image",
@@ -179,7 +186,12 @@ const parseGalleryImages = (metaData, galleryData) => {
 	return galleryData.items.map((item) => {
 		const id = item.media_id;
 		const ext = metaData[id].m.split("/")[1];
-		return { id, url: "https://i.redd.it/".concat(id, `.${ext}`) };
+		const aspectRatio = metaData[id].s.x / metaData[id].s.y;
+		return {
+			id,
+			url: "https://i.redd.it/".concat(id, `.${ext}`),
+			aspectRatio,
+		};
 	});
 };
 

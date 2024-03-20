@@ -61,8 +61,9 @@ const SelfPost = ({ post }) => {
 };
 
 const GalleryPost = ({ post, margin }) => {
+	const height = calculateMediaHeight(post.aspectRatio);
 	return (
-		<MediaPost post={post}>
+		<MediaPost post={post} additionalStyle={{ height }}>
 			<ImageCarousel images={post.gallery} margin={margin} />
 		</MediaPost>
 	);
