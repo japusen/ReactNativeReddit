@@ -50,6 +50,8 @@ const PostInfo = ({ post, onThumbnailClicked }) => {
 			onPress={() => {
 				navigation.push("Post", {
 					postID: post.id,
+					subreddit: post.subreddit,
+					title: post.title,
 				});
 			}}
 			onLongPress={() => {
