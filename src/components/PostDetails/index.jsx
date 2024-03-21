@@ -4,6 +4,7 @@ import { ActivityIndicator, Surface, Text } from "react-native-paper";
 
 import { TokenContext } from "../../contexts/TokenContext";
 import { usePostArticle } from "../../hooks/usePostArticle";
+import CommentSortMenu from "../SortMenus/CommentsSortMenu";
 
 const styles = StyleSheet.create({
 	container: {
@@ -34,8 +35,9 @@ const PostDetails = ({ route, navigation }) => {
 	useEffect(() => {
 		navigation.setOptions({
 			title: truncatedTitle,
+			headerRight: () => <CommentSortMenu setSort={setSort} />,
 		});
-	}, []);
+	}, [sort]);
 
 	if (isLoading) {
 		return (
