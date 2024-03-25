@@ -9,6 +9,7 @@ const colors = {
 	locked: "#c5a939",
 	nsfw: "red",
 	spoiler: "#fc6a03",
+	removed: "red",
 };
 
 const indicator = {
@@ -41,6 +42,10 @@ const styles = StyleSheet.create({
 		...indicator,
 		borderColor: colors.spoiler,
 	},
+	removedIndicator: {
+		...indicator,
+		borderColor: colors.removed,
+	},
 	nsfwText: {
 		color: colors.nsfw,
 		fontSize,
@@ -51,13 +56,21 @@ const styles = StyleSheet.create({
 	},
 });
 
-const Indicators = ({ isNsfw, isSpoiler, isLocked, isPinned, isStickied }) => {
+const Indicators = ({
+	isNsfw,
+	isSpoiler,
+	isLocked,
+	isPinned,
+	isStickied,
+	isRemoved,
+}) => {
 	return (
 		<View style={styles.indicators}>
 			{(isStickied || isPinned) && <StickyIndicator />}
 			{isLocked && <LockedIndicator />}
 			{isNsfw && <NsfwIndicator />}
 			{isSpoiler && <SpoilerIndicator />}
+			{isRemoved && <RemovedIndicator />}
 		</View>
 	);
 };
@@ -90,6 +103,18 @@ const SpoilerIndicator = () => {
 	return (
 		<View style={styles.spoilerIndicator}>
 			<Text style={styles.spoilerText}>spoiler</Text>
+		</View>
+	);
+};
+
+const RemovedIndicator = () => {
+	return (
+		<View style={styles.removedIndicator}>
+			<Icon
+				source="eye-remove-outline"
+				color={colors.removed}
+				size={iconSize}
+			/>
 		</View>
 	);
 };

@@ -63,6 +63,7 @@ const commonProps = (post) => {
 		isLocked: post.locked,
 		isPinned: post.pinned,
 		isStickied: post.stickied,
+		isRemoved: post.no_follow,
 		domain: post.domain,
 		permalink: post.permalink,
 		time: formatTime(post.created_utc),

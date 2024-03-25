@@ -80,6 +80,7 @@ const PostInfo = ({ post, onThumbnailClicked }) => {
 							isLocked={post.isLocked}
 							isPinned={post.isPinned}
 							isStickied={post.isStickied}
+							isRemoved={post.isRemoved}
 						/>
 					</View>
 
