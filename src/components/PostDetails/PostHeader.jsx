@@ -1,43 +1,125 @@
-import { View, Text } from "react-native";
-import { WebView } from "react-native-webview";
+import { View, ScrollView, StyleSheet } from "react-native";
+import { Text, Card, useTheme } from "react-native-paper";
+
+import RedditImage from "../Media/RedditImage";
+import ImageCarousel from "../Media/ImageCarousel";
+import RedditVideo from "../Media/RedditVideo";
+import ExternalVideo from "../Media/ExternalVideo";
+import calculateMediaContainerHeight from "../../utils/CalculateMediaContainerHeight";
+
+const styles = StyleSheet.create({
+	card: {
+		marginHorizontal: 8,
+		overflow: "hidden",
+	},
+	crossPostContainer: {
+		marginHorizontal: 10,
+		marginBottom: 10,
+		borderRadius: 10,
+		borderStyle: "solid",
+		borderWidth: 1,
+	},
+	mediaContainer: {
+		height: 500,
+		backgroundColor: "black",
+		overflow: "hidden",
+		borderRadius: 10,
+	},
+});
+
+const galleryMargin = 2 * 10 + 2 * 8; // outer view has margin of 8 and card has padding of 10
+
+const mediaHeight = (aspectRatio) =>
+	calculateMediaContainerHeight(
+		aspectRatio,
+		styles.mediaContainer.height,
+		400
+	);
 
 const PostHeader = ({ post }) => {
+	const theme = useTheme();
+
+	return (
+		<Card style={{ backgroundColor: theme.colors.surface }}>
+			<View style={{ padding: 10, display: "flex", gap: 10 }}>
+				<Text
+					variant="titleLarge"
+					style={{ color: theme.colors.primary }}
+				>
+					{post.title}
+				</Text>
+
+				<Media post={post} />
+
+				{post.selfText && (
+					<Text selectable variant="bodyLarge">
+						{post.selfText}
+					</Text>
+				)}
+
+				<View
+					style={{
+						display: "flex",
+						flexDirection: "row",
+						flexWrap: "wrap",
+						gap: 10,
+					}}
+				>
+					<Text>{post.author}</Text>
+					<Text>{post.score}</Text>
+					<Text>{post.numComments}</Text>
+					<Text>{post.time}</Text>
+				</View>
+			</View>
+		</Card>
+	);
+};
+
+const Media = ({ post }) => {
+	const height = mediaHeight(post.aspectRatio);
+
 	switch (post.type) {
-		case "self":
-			return <SelfPostHeader post={post} />;
+		case "image":
+			return (
+				<MediaContainer height={height}>
+					<RedditImage url={post.imageURL} />
+				</MediaContainer>
+			);
+		case "gallery":
+			return (
+				<MediaContainer height={height}>
+					<ImageCarousel
+						images={post.gallery}
+						margin={galleryMargin}
+					/>
+				</MediaContainer>
+			);
+		case "reddit_video":
+			return (
+				<MediaContainer height={height}>
+					<RedditVideo
+						url={post.videoURL}
+						height={height}
+						autoplay={false}
+						showControls={true}
+					/>
+				</MediaContainer>
+			);
+		case "external_video":
+			return (
+				<MediaContainer height={height}>
+					<ExternalVideo url={post.videoURL} height={height} />
+				</MediaContainer>
+			);
+		case "cross-post":
+			return <Media post={post.innerPost} />;
 		default:
-			break;
+			return;
 	}
 };
 
-const SelfPostHeader = ({ post }) => {
-	const parsedHtml = () => {
-		if (post.html.startsWith("<!-- SC_OFF -->")) {
-			return post.html.substring(15, post.html.length - 14);
-		} else if (post.html.startsWith("<!-- SC_ON -->")) {
-			return post.html.substring(14, post.html.length - 13);
-		} else {
-			return post.html;
-		}
-	};
-
-	console.log(parsedHtml());
-
-	return (
-		<View style={{ flex: 1, backgroundColor: "red" }}>
-			<Text>{post.title}</Text>
-			{/* <Text>{post.text}</Text> */}
-			<WebView
-				originWhitelist={["*"]}
-				source={{ html: parsedHtml() }}
-				style={{ height: 800, width: 500, fontSize: 25 }}
-				onShouldStartLoadWithRequest={(request) => {
-					console.log(request.url);
-					return false;
-				}}
-			/>
-		</View>
-	);
-};
+const MediaContainer = ({ children, height }) => (
+	<View style={{ ...styles.mediaContainer, height }}>{children}</View>
+);
 
 export default PostHeader;

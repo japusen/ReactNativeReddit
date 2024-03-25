@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { StyleSheet } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { ActivityIndicator, Surface, Text } from "react-native-paper";
 
 import { TokenContext } from "../../contexts/TokenContext";
@@ -59,7 +59,11 @@ const PostDetails = ({ route, navigation }) => {
 	console.log(post.type);
 	console.log(comments.length);
 
-	return <PostHeader post={post} />;
+	return (
+		<ScrollView style={{ margin: 8 }}>
+			<PostHeader post={post} />
+		</ScrollView>
+	);
 };
 
 export default PostDetails;
