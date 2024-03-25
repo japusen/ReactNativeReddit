@@ -73,6 +73,7 @@ const commonProps = (post) => {
 			post.link_flair_background_color,
 			post.link_flair_text_color
 		),
+		selfText: post.selftext,
 	};
 };
 
@@ -80,8 +81,6 @@ const selfPost = (post) => {
 	return {
 		...commonProps(post),
 		type: "self",
-		text: post.selftext,
-		html: post.selftext_html,
 	};
 };
 
