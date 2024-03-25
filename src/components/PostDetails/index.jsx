@@ -5,6 +5,7 @@ import { ActivityIndicator, Surface, Text } from "react-native-paper";
 import { TokenContext } from "../../contexts/TokenContext";
 import { usePostArticle } from "../../hooks/usePostArticle";
 import CommentSortMenu from "../SortMenus/CommentsSortMenu";
+import PostHeader from "./PostHeader";
 
 const styles = StyleSheet.create({
 	container: {
@@ -19,7 +20,7 @@ const styles = StyleSheet.create({
 
 const PostDetails = ({ route, navigation }) => {
 	const token = useContext(TokenContext);
-	const { postID, subreddit, title } = route.params;
+	const { postID, subreddit } = route.params;
 	const [sort, setSort] = useState("confidence");
 
 	const { post, comments, error, isLoading, isError } = usePostArticle(
@@ -29,15 +30,15 @@ const PostDetails = ({ route, navigation }) => {
 		sort
 	);
 
-	const truncatedTitle =
-		title.length >= 25 ? title.slice(0, 24) + "..." : title;
+	const truncatedSubreddit =
+		subreddit.length >= 25 ? subreddit.slice(0, 24) + "..." : subreddit;
 
 	useEffect(() => {
 		navigation.setOptions({
-			title: truncatedTitle,
+			title: truncatedSubreddit,
 			headerRight: () => <CommentSortMenu setSort={setSort} />,
 		});
-	}, [sort]);
+	}, []);
 
 	if (isLoading) {
 		return (
@@ -58,11 +59,7 @@ const PostDetails = ({ route, navigation }) => {
 	console.log(post.type);
 	console.log(comments.length);
 
-	return (
-		<Text>
-			{postID} {subreddit}
-		</Text>
-	);
+	return <PostHeader post={post} />;
 };
 
 export default PostDetails;

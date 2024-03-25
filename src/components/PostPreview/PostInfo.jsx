@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { StyleSheet, View, Pressable } from "react-native";
-import { Text, Icon, useTheme } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 
 import Thumbnail from "./Thumbnail";
@@ -51,7 +51,6 @@ const PostInfo = ({ post, onThumbnailClicked }) => {
 				navigation.push("Post", {
 					postID: post.id,
 					subreddit: post.subreddit,
-					title: post.title,
 				});
 			}}
 			onLongPress={() => {
