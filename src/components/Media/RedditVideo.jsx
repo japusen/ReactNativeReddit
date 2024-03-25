@@ -2,12 +2,17 @@ import { useState } from "react";
 import { ResizeMode } from "expo-av";
 import VideoPlayer from "expo-video-player";
 
-const RedditVideo = ({ url, height }) => {
+const RedditVideo = ({
+	url,
+	height,
+	autoplay = true,
+	showControls = false,
+}) => {
 	const [isMute, setIsMute] = useState(false);
 	return (
 		<VideoPlayer
 			videoProps={{
-				shouldPlay: true,
+				shouldPlay: autoplay,
 				resizeMode: ResizeMode.CONTAIN,
 				source: {
 					uri: url,
@@ -23,6 +28,7 @@ const RedditVideo = ({ url, height }) => {
 				visible: false,
 			}}
 			style={{ height }}
+			defaultControlsVisible={showControls}
 		/>
 	);
 };
