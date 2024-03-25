@@ -12,13 +12,14 @@ const styles = StyleSheet.create({
 		marginHorizontal: 8,
 		overflow: "hidden",
 	},
-	crossPostContainer: {
-		marginHorizontal: 10,
-		marginBottom: 10,
-		borderRadius: 10,
-		borderStyle: "solid",
-		borderWidth: 1,
+	cardContent: { padding: 10, display: "flex", gap: 10 },
+	cardInfo: {
+		display: "flex",
+		flexDirection: "row",
+		flexWrap: "wrap",
+		gap: 10,
 	},
+	linkButton: { color: "blue" },
 	mediaContainer: {
 		height: 500,
 		backgroundColor: "black",
@@ -40,13 +41,8 @@ const PostHeader = ({ post }) => {
 	const theme = useTheme();
 
 	return (
-		<Card
-			style={{
-				backgroundColor: theme.colors.surface,
-				marginVertical: 8,
-			}}
-		>
-			<View style={{ padding: 10, display: "flex", gap: 10 }}>
+		<Card style={styles.card}>
+			<View style={styles.cardContent}>
 				<Text
 					variant="titleLarge"
 					style={{ color: theme.colors.primary }}
@@ -62,14 +58,7 @@ const PostHeader = ({ post }) => {
 					</Text>
 				)}
 
-				<View
-					style={{
-						display: "flex",
-						flexDirection: "row",
-						flexWrap: "wrap",
-						gap: 10,
-					}}
-				>
+				<View style={styles.cardInfo}>
 					<Text>{post.author}</Text>
 					<Text>{post.score}</Text>
 					<Text>{post.numComments}</Text>
@@ -128,7 +117,7 @@ const Media = ({ post }) => {
 					onPress={() => {
 						console.log(post.link);
 					}}
-					style={{ color: "blue" }}
+					style={styles.linkButton}
 				>
 					{post.link}
 				</Button>
