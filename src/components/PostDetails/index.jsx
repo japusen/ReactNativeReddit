@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { ScrollView, StyleSheet } from "react-native";
-import { ActivityIndicator, Surface, Text } from "react-native-paper";
+import { ActivityIndicator, Surface, Text, useTheme } from "react-native-paper";
 
 import { TokenContext } from "../../contexts/TokenContext";
 import { usePostArticle } from "../../hooks/usePostArticle";
@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
 });
 
 const PostDetails = ({ route, navigation }) => {
+	const theme = useTheme();
 	const token = useContext(TokenContext);
 	const { postID, subreddit } = route.params;
 	const [sort, setSort] = useState("confidence");
@@ -60,7 +61,13 @@ const PostDetails = ({ route, navigation }) => {
 	console.log(comments.length);
 
 	return (
-		<ScrollView style={{ margin: 8 }}>
+		<ScrollView
+			style={{
+				flex: 1,
+				padding: 8,
+				backgroundColor: theme.colors.surfaceVariant,
+			}}
+		>
 			<PostHeader post={post} />
 		</ScrollView>
 	);

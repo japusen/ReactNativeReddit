@@ -1,5 +1,5 @@
-import { View, ScrollView, StyleSheet } from "react-native";
-import { Text, Card, useTheme } from "react-native-paper";
+import { View, StyleSheet } from "react-native";
+import { Text, Card, Button, useTheme } from "react-native-paper";
 
 import RedditImage from "../Media/RedditImage";
 import ImageCarousel from "../Media/ImageCarousel";
@@ -40,7 +40,12 @@ const PostHeader = ({ post }) => {
 	const theme = useTheme();
 
 	return (
-		<Card style={{ backgroundColor: theme.colors.surface }}>
+		<Card
+			style={{
+				backgroundColor: theme.colors.surface,
+				marginVertical: 8,
+			}}
+		>
 			<View style={{ padding: 10, display: "flex", gap: 10 }}>
 				<Text
 					variant="titleLarge"
@@ -79,6 +84,8 @@ const Media = ({ post }) => {
 	const height = mediaHeight(post.aspectRatio);
 
 	switch (post.type) {
+		case "self":
+			return;
 		case "image":
 			return (
 				<MediaContainer height={height}>
@@ -113,8 +120,19 @@ const Media = ({ post }) => {
 			);
 		case "cross-post":
 			return <Media post={post.innerPost} />;
+		case "link":
 		default:
-			return;
+			return (
+				<Button
+					mode="outlined"
+					onPress={() => {
+						console.log(post.link);
+					}}
+					style={{ color: "blue" }}
+				>
+					{post.link}
+				</Button>
+			);
 	}
 };
 
