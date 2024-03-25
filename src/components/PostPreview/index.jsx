@@ -11,6 +11,7 @@ import ImageCarousel from "../Media/ImageCarousel";
 import RedditImage from "../Media/RedditImage";
 import RedditVideo from "../Media/RedditVideo";
 import ExternalVideo from "../Media/ExternalVideo";
+import calculateMediaContainerHeight from "../../utils/CalculateMediaContainerHeight";
 
 const styles = StyleSheet.create({
 	card: {
@@ -33,6 +34,13 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 	},
 });
+
+const mediaHeight = (aspectRatio) =>
+	calculateMediaContainerHeight(
+		aspectRatio,
+		styles.mediaContainer.height,
+		600
+	);
 
 export const PostPreview = ({ post }) => {
 	switch (post.type) {
@@ -61,38 +69,38 @@ const SelfPost = ({ post }) => {
 };
 
 const GalleryPost = ({ post, margin }) => {
-	const height = calculateMediaHeight(post.aspectRatio);
+	const height = mediaHeight(post.aspectRatio);
 	return (
-		<MediaPost post={post} additionalStyle={{ height }}>
+		<PostCardWithMedia post={post} height={height}>
 			<ImageCarousel images={post.gallery} margin={margin} />
-		</MediaPost>
+		</PostCardWithMedia>
 	);
 };
 
 const ImagePost = ({ post }) => {
-	const height = calculateMediaHeight(post.aspectRatio);
+	const height = mediaHeight(post.aspectRatio);
 	return (
-		<MediaPost post={post} additionalStyle={{ height }}>
+		<PostCardWithMedia post={post} height={height}>
 			<RedditImage url={post.imageURL} />
-		</MediaPost>
+		</PostCardWithMedia>
 	);
 };
 
 const HostedVideoPost = ({ post }) => {
-	const height = calculateMediaHeight(post.aspectRatio);
+	const height = mediaHeight(post.aspectRatio);
 	return (
-		<MediaPost post={post} additionalStyle={{ height }}>
+		<PostCardWithMedia post={post} height={height}>
 			<RedditVideo url={post.videoURL} height={height} />
-		</MediaPost>
+		</PostCardWithMedia>
 	);
 };
 
 const ExternalVideoPost = ({ post }) => {
-	const height = calculateMediaHeight(post.aspectRatio);
+	const height = mediaHeight(post.aspectRatio);
 	return (
-		<MediaPost post={post} additionalStyle={{ height }}>
+		<PostCardWithMedia post={post} height={height}>
 			<ExternalVideo url={post.videoURL} height={height} />
-		</MediaPost>
+		</PostCardWithMedia>
 	);
 };
 
@@ -121,20 +129,14 @@ const CrossPost = ({ post }) => {
 	);
 };
 
-const calculateMediaHeight = (aspectRatio) => {
-	return Math.min(styles.mediaContainer.height / aspectRatio, 600);
-};
-
-const MediaPost = ({ post, children, additionalStyle = null }) => {
+const PostCardWithMedia = ({ post, children, height }) => {
 	const [showMedia, setShowMedia] = useState(false);
 
 	const toggleShowMedia = () => {
 		setShowMedia(!showMedia);
 	};
 
-	const mediaContainerStyle = additionalStyle
-		? [styles.mediaContainer, additionalStyle]
-		: styles.mediaContainer;
+	const mediaContainerStyle = { ...styles.mediaContainer, height };
 
 	return (
 		<PostCard post={post} onThumbnailClicked={toggleShowMedia}>
