@@ -7,6 +7,7 @@ const colors = {
 	nsfw: "red",
 	spoiler: "#fc6a03",
 	removed: "red",
+	submitter: "blue",
 };
 
 const indicator = {
@@ -43,11 +44,19 @@ const styles = StyleSheet.create({
 		...indicator,
 		borderColor: colors.removed,
 	},
+	submitterIndicator: {
+		...indicator,
+		borderColor: colors.submitter,
+		backgroundColor: colors.submitter,
+	},
 	nsfwText: {
 		color: colors.nsfw,
 	},
 	spoilerText: {
 		color: colors.spoiler,
+	},
+	submitterText: {
+		color: "white",
 	},
 });
 
@@ -79,6 +88,14 @@ export const SpoilerIndicator = ({ fontSize }) => {
 	return (
 		<View style={styles.spoilerIndicator}>
 			<Text style={{ ...styles.spoilerText, fontSize }}>spoiler</Text>
+		</View>
+	);
+};
+
+export const SubmitterIndicator = ({ fontSize }) => {
+	return (
+		<View style={styles.submitterIndicator}>
+			<Text style={{ ...styles.submitterText, fontSize }}>OP</Text>
 		</View>
 	);
 };

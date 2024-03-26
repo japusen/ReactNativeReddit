@@ -1,6 +1,11 @@
-import { useState, useEffect, useContext } from "react";
 import { View, FlatList, StyleSheet } from "react-native";
-import { Card, Text, useTheme } from "react-native-paper";
+import { Card, Text, Icon, useTheme } from "react-native-paper";
+
+import {
+	LockedIndicator,
+	StickyIndicator,
+	SubmitterIndicator,
+} from "../common/Indicators";
 
 const styles = StyleSheet.create({
 	card: {
@@ -13,11 +18,19 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		gap: 10,
 		alignItems: "center",
+		flexWrap: "wrap",
 	},
 	separator: {
 		marginTop: 6,
 	},
+	commentBar: {
+		borderLeftWidth: 3,
+	},
 });
+
+const iconSize = 14;
+const fontSize = 10;
+const borderColors = ["blueviolet", "blue", "green", "gold", "orange", "red"];
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
@@ -55,6 +68,11 @@ const CommentCard = ({ comment }) => {
 	return (
 		<ContentCard depth={comment.depth}>
 			<View style={styles.row}>
+				{comment.isStickied && <StickyIndicator iconSize={iconSize} />}
+				{comment.isLocked && <LockedIndicator iconSize={iconSize} />}
+				{comment.isSubmitter && (
+					<SubmitterIndicator fontSize={fontSize} />
+				)}
 				<Text variant="labelLarge">{comment.author}</Text>
 				<Text variant="labelMedium">{comment.score}</Text>
 				<Text variant="labelMedium">{comment.time}</Text>
@@ -75,11 +93,14 @@ const MoreButton = ({ more }) => {
 };
 
 const ContentCard = ({ depth, children }) => {
-	const margin = {
-		marginLeft: depth * 8,
-	};
+	const marginLeft = depth * 8;
+
+	const borderLeftColor = borderColors[depth % borderColors.length];
 	return (
-		<Card style={margin} contentStyle={styles.card}>
+		<Card
+			style={{ ...styles.commentBar, marginLeft, borderLeftColor }}
+			contentStyle={styles.card}
+		>
 			{children}
 		</Card>
 	);
