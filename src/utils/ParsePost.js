@@ -1,3 +1,7 @@
+import formatNumberInThousands from "./FormatNumberInThousands";
+import formatTime from "./FormatTime";
+import calculateAspectRatio from "./CalculateAspectRatio";
+
 const parsePost = (post) => {
 	if (post.is_self) {
 		return selfPost(post);
@@ -252,52 +256,6 @@ const extractVideoSrcFromHTML = (htmlString) => {
 	} else {
 		return null; // Return null if no match is found
 	}
-};
-
-const formatTime = (time) => {
-	const createdTimeInSeconds = parseInt(time);
-	const nowInSeconds = Date.now() / 1000;
-
-	const timeDifferenceInSeconds = nowInSeconds - createdTimeInSeconds;
-	const years = Math.floor(timeDifferenceInSeconds / 31536000);
-	const months = Math.floor(timeDifferenceInSeconds / 2592000);
-	const weeks = Math.floor(timeDifferenceInSeconds / 604800);
-	const days = Math.floor(timeDifferenceInSeconds / 86400);
-	const hours = Math.floor(timeDifferenceInSeconds / 3600);
-	const minutes = Math.floor(timeDifferenceInSeconds / 60);
-	const seconds = Math.floor(timeDifferenceInSeconds);
-
-	if (years) {
-		return `${years}y ago`;
-	} else if (months) {
-		return `${months}m ago`;
-	} else if (weeks) {
-		return `${weeks}w ago`;
-	} else if (days) {
-		return `${days}d ago`;
-	} else if (hours) {
-		return `${hours}h ago`;
-	} else if (minutes) {
-		return `${minutes}m ago`;
-	} else {
-		return `${seconds}s ago`;
-	}
-};
-
-const formatNumberInThousands = (value, name) => {
-	const valueInThousands = Math.round((value / 1000) * 10) / 10;
-
-	if (valueInThousands > 1) {
-		return `${valueInThousands}k ${name}s`;
-	} else if (value === 1) {
-		return `1 ${name}`;
-	} else {
-		return `${value} ${name}s`;
-	}
-};
-
-const calculateAspectRatio = (width, height) => {
-	return width && height ? width / height : 1;
 };
 
 export default parsePost;
