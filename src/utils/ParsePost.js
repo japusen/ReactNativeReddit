@@ -1,6 +1,7 @@
 import formatNumberInThousands from "./FormatNumberInThousands";
 import formatTime from "./FormatTime";
 import calculateAspectRatio from "./CalculateAspectRatio";
+import parseFlair from "./ParseFlair";
 
 const parsePost = (post) => {
 	if (post.is_self) {
@@ -215,36 +216,6 @@ const isValidThumbnail = (thumbnail) => {
 		thumbnail !== "image" &&
 		thumbnail !== "spoiler"
 	);
-};
-
-const parseFlair = (type, text, richText, bgColor, textColorType) => {
-	const textColor =
-		!bgColor || !textColorType || textColorType === "light"
-			? "white"
-			: "black";
-	const backgroundColor = bgColor ? bgColor : "gray";
-
-	if (type === "text" && text) {
-		return {
-			type,
-			text,
-			backgroundColor,
-			textColor,
-		};
-	} else if (type === "richtext" && richText) {
-		return {
-			type,
-			richText: richText.map((item) =>
-				item.e === "emoji"
-					? { type: item.e, value: item.u }
-					: { type: item.e, value: item.t }
-			),
-			backgroundColor,
-			textColor,
-		};
-	} else {
-		return null;
-	}
 };
 
 const extractVideoSrcFromHTML = (htmlString) => {
