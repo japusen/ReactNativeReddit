@@ -45,6 +45,14 @@ const parseComment = (data) => {
 		isRemoved: data.no_follow,
 		replies: data.replies !== "" ? data.replies.data.children : null,
 		depth: data.depth,
+		distinguished: data.distinguished,
+		commentFlair: parseFlair(
+			data.author_flair_type,
+			data.author_flair_text,
+			data.author_flair_richtext,
+			data.author_flair_background_color,
+			data.author_flair_text_color
+		),
 	};
 };
 
