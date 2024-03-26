@@ -4,7 +4,7 @@ import { Text, useTheme } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 
 import Thumbnail from "./Thumbnail";
-import Indicators from "./Indicators";
+import PostIndicators from "./PostIndicators";
 import Flair from "./Flair";
 import PostOptions from "./PostOptions";
 
@@ -74,7 +74,7 @@ const PostInfo = ({ post, onThumbnailClicked }) => {
 					<View style={styles.row}>
 						<Text style={subredditStyle}>{post.subreddit}</Text>
 						{post.linkFlair && <Flair linkFlair={post.linkFlair} />}
-						<Indicators
+						<PostIndicators
 							isNsfw={post.isNsfw}
 							isSpoiler={post.isSpoiler}
 							isLocked={post.isLocked}

@@ -1,9 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { Text, Icon } from "react-native-paper";
 
-const iconSize = 14;
-const fontSize = 10;
-
 const colors = {
 	sticky: "green",
 	locked: "#c5a939",
@@ -48,34 +45,13 @@ const styles = StyleSheet.create({
 	},
 	nsfwText: {
 		color: colors.nsfw,
-		fontSize,
 	},
 	spoilerText: {
 		color: colors.spoiler,
-		fontSize,
 	},
 });
 
-const Indicators = ({
-	isNsfw,
-	isSpoiler,
-	isLocked,
-	isPinned,
-	isStickied,
-	isRemoved,
-}) => {
-	return (
-		<View style={styles.indicators}>
-			{(isStickied || isPinned) && <StickyIndicator />}
-			{isLocked && <LockedIndicator />}
-			{isNsfw && <NsfwIndicator />}
-			{isSpoiler && <SpoilerIndicator />}
-			{isRemoved && <RemovedIndicator />}
-		</View>
-	);
-};
-
-const StickyIndicator = () => {
+export const StickyIndicator = ({ iconSize }) => {
 	return (
 		<View style={styles.stickyIndicator}>
 			<Icon source="pin" color={colors.sticky} size={iconSize} />
@@ -83,7 +59,7 @@ const StickyIndicator = () => {
 	);
 };
 
-const LockedIndicator = () => {
+export const LockedIndicator = ({ iconSize }) => {
 	return (
 		<View style={styles.lockedIndicator}>
 			<Icon source="lock" color={colors.locked} size={iconSize} />
@@ -91,23 +67,23 @@ const LockedIndicator = () => {
 	);
 };
 
-const NsfwIndicator = () => {
+export const NsfwIndicator = ({ fontSize }) => {
 	return (
 		<View style={styles.nsfwIndicator}>
-			<Text style={styles.nsfwText}>nsfw</Text>
+			<Text style={{ ...styles.nsfwText, fontSize }}>nsfw</Text>
 		</View>
 	);
 };
 
-const SpoilerIndicator = () => {
+export const SpoilerIndicator = ({ fontSize }) => {
 	return (
 		<View style={styles.spoilerIndicator}>
-			<Text style={styles.spoilerText}>spoiler</Text>
+			<Text style={{ ...styles.spoilerText, fontSize }}>spoiler</Text>
 		</View>
 	);
 };
 
-const RemovedIndicator = () => {
+export const RemovedIndicator = ({ iconSize }) => {
 	return (
 		<View style={styles.removedIndicator}>
 			<Icon
@@ -118,5 +94,3 @@ const RemovedIndicator = () => {
 		</View>
 	);
 };
-
-export default Indicators;
