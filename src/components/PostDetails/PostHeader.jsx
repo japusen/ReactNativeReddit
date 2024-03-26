@@ -9,7 +9,6 @@ import calculateMediaContainerHeight from "../../utils/CalculateMediaContainerHe
 
 const styles = StyleSheet.create({
 	card: {
-		marginHorizontal: 8,
 		overflow: "hidden",
 	},
 	cardContent: { padding: 10, display: "flex", gap: 10 },

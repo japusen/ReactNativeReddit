@@ -6,6 +6,7 @@ import { TokenContext } from "../../contexts/TokenContext";
 import { usePostArticle } from "../../hooks/usePostArticle";
 import CommentSortMenu from "../SortMenus/CommentsSortMenu";
 import PostHeader from "./PostHeader";
+import CommentThread from "./CommentThread";
 
 const styles = StyleSheet.create({
 	container: {
@@ -24,7 +25,7 @@ const PostDetails = ({ route, navigation }) => {
 	const { postID, subreddit } = route.params;
 	const [sort, setSort] = useState("confidence");
 
-	const { post, comments, error, isLoading, isError } = usePostArticle(
+	const { post, commentThread, error, isLoading, isError } = usePostArticle(
 		token,
 		postID,
 		subreddit,
@@ -57,19 +58,10 @@ const PostDetails = ({ route, navigation }) => {
 		);
 	}
 
-	console.log(post.type);
-	console.log(comments.length);
-
 	return (
-		<ScrollView
-			style={{
-				flex: 1,
-				padding: 8,
-				backgroundColor: theme.colors.surfaceVariant,
-			}}
-		>
+		<CommentThread threadItems={commentThread}>
 			<PostHeader post={post} />
-		</ScrollView>
+		</CommentThread>
 	);
 };
 
