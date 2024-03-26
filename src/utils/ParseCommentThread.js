@@ -1,3 +1,6 @@
+import formatNumberInThousands from "./FormatNumberInThousands";
+import formatTime from "./FormatTime";
+
 const parseCommentTree = (thread) => {
 	const comments = new Array();
 
@@ -31,8 +34,8 @@ const parseComment = (data) => {
 		id: data.id,
 		parentID: data.parent_id,
 		author: data.author,
-		time: data.created_utc,
-		score: data.score,
+		time: formatTime(data.created_utc),
+		score: formatNumberInThousands(data.score, "point"),
 		text: data.body,
 		html: data.body_html,
 		stickied: data.stickied || data.pinned,
@@ -49,7 +52,9 @@ const parseMore = (data) => {
 	return {
 		type: "more",
 		id: data.id,
+		parentID: data.parent_id.split("_")[1],
 		replies: data.children,
+		depth: data.depth,
 	};
 };
 

@@ -11,7 +11,7 @@ export const usePostArticle = (token, article, subreddit, sort) => {
 
 	return {
 		post: data ? parsePost(data.post) : null,
-		comments: data ? parseCommentTree(data.comments) : null,
+		commentThread: data ? parseCommentTree(data.comments) : null,
 		error,
 		isLoading,
 		isError,
