@@ -100,6 +100,17 @@ export const SubmitterIndicator = ({ fontSize }) => {
 	);
 };
 
+export const DistinguishedIndicator = ({ distinguished }) => {
+	const color =
+		distinguished === "moderator"
+			? "green"
+			: distinguished === "admin"
+			? "red"
+			: "gold";
+
+	return <Text style={{ color }}>{distinguished}</Text>;
+};
+
 export const RemovedIndicator = ({ iconSize }) => {
 	return (
 		<View style={styles.removedIndicator}>

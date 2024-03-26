@@ -5,6 +5,7 @@ import {
 	LockedIndicator,
 	StickyIndicator,
 	SubmitterIndicator,
+	DistinguishedIndicator,
 } from "../common/Indicators";
 
 const styles = StyleSheet.create({
@@ -74,6 +75,12 @@ const CommentCard = ({ comment }) => {
 					<SubmitterIndicator fontSize={fontSize} />
 				)}
 				<Text variant="labelLarge">{comment.author}</Text>
+				{comment.distinguished && (
+					// <Text variant="labelLarge">{comment.distinguished}</Text>
+					<DistinguishedIndicator
+						distinguished={comment.distinguished}
+					/>
+				)}
 				<Text variant="labelMedium">{comment.score}</Text>
 				<Text variant="labelMedium">{comment.time}</Text>
 			</View>
