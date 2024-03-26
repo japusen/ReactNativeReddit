@@ -38,7 +38,7 @@ const parseComment = (data) => {
 		score: formatNumberInThousands(data.score, "point"),
 		text: data.body,
 		html: data.body_html,
-		stickied: data.stickied || data.pinned,
+		isStickied: data.stickied || data.pinned,
 		isSubmitter: data.is_submitter,
 		isLocked: data.locked,
 		hasScoreHidden: data.score_hidden,
