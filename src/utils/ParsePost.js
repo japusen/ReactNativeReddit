@@ -72,7 +72,7 @@ const commonProps = (post) => {
 		domain: post.domain,
 		permalink: post.permalink,
 		time: formatTime(post.created_utc),
-		linkFlair: parseFlair(
+		flair: parseFlair(
 			post.link_flair_type,
 			post.link_flair_text,
 			post.link_flair_richtext,

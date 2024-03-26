@@ -21,21 +21,21 @@ const styles = StyleSheet.create({
 	},
 });
 
-const Flair = ({ linkFlair }) => {
-	if (linkFlair.type === "text") {
+const Flair = ({ flair }) => {
+	if (flair.type === "text") {
 		return (
 			<FlairTextContainer
-				text={linkFlair.text}
-				color={linkFlair.textColor}
-				backgroundColor={linkFlair.backgroundColor}
+				text={flair.text}
+				color={flair.textColor}
+				backgroundColor={flair.backgroundColor}
 			/>
 		);
 	} else {
 		return (
 			<RichFlairContainer
-				flairItems={linkFlair.richText}
-				color={linkFlair.textColor}
-				backgroundColor={linkFlair.backgroundColor}
+				flairItems={flair.richText}
+				color={flair.textColor}
+				backgroundColor={flair.backgroundColor}
 			/>
 		);
 	}

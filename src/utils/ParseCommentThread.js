@@ -1,5 +1,6 @@
 import formatNumberInThousands from "./FormatNumberInThousands";
 import formatTime from "./FormatTime";
+import parseFlair from "./ParseFlair";
 
 const parseCommentTree = (thread) => {
 	const comments = new Array();
@@ -46,7 +47,7 @@ const parseComment = (data) => {
 		replies: data.replies !== "" ? data.replies.data.children : null,
 		depth: data.depth,
 		distinguished: data.distinguished,
-		commentFlair: parseFlair(
+		flair: parseFlair(
 			data.author_flair_type,
 			data.author_flair_text,
 			data.author_flair_richtext,

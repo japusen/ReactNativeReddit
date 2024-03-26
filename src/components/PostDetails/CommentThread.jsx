@@ -7,6 +7,7 @@ import {
 	SubmitterIndicator,
 	DistinguishedIndicator,
 } from "../common/Indicators";
+import Flair from "../common/Flair";
 
 const styles = StyleSheet.create({
 	card: {
@@ -76,11 +77,11 @@ const CommentCard = ({ comment }) => {
 				)}
 				<Text variant="labelLarge">{comment.author}</Text>
 				{comment.distinguished && (
-					// <Text variant="labelLarge">{comment.distinguished}</Text>
 					<DistinguishedIndicator
 						distinguished={comment.distinguished}
 					/>
 				)}
+				{comment.flair && <Flair flair={comment.flair} />}
 				<Text variant="labelMedium">{comment.score}</Text>
 				<Text variant="labelMedium">{comment.time}</Text>
 			</View>

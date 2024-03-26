@@ -5,7 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import Thumbnail from "./Thumbnail";
 import PostIndicators from "./PostIndicators";
-import Flair from "./Flair";
+import Flair from "../common/Flair";
 import PostOptions from "./PostOptions";
 
 const styles = StyleSheet.create({
@@ -73,7 +73,7 @@ const PostInfo = ({ post, onThumbnailClicked }) => {
 
 					<View style={styles.row}>
 						<Text style={subredditStyle}>{post.subreddit}</Text>
-						{post.linkFlair && <Flair linkFlair={post.linkFlair} />}
+						{post.flair && <Flair flair={post.flair} />}
 						<PostIndicators
 							isNsfw={post.isNsfw}
 							isSpoiler={post.isSpoiler}
