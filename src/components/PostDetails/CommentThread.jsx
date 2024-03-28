@@ -1,5 +1,5 @@
 import { View, FlatList, StyleSheet } from "react-native";
-import { Card, Text, Icon, useTheme } from "react-native-paper";
+import { Card, Text, useTheme } from "react-native-paper";
 
 import {
 	LockedIndicator,
@@ -68,25 +68,37 @@ const CommentThread = ({ threadItems, children }) => {
 
 const CommentCard = ({ comment }) => {
 	return (
-		<ContentCard depth={comment.depth}>
-			<View style={styles.row}>
-				{comment.isStickied && <StickyIndicator iconSize={iconSize} />}
-				{comment.isLocked && <LockedIndicator iconSize={iconSize} />}
-				{comment.isSubmitter && (
-					<SubmitterIndicator fontSize={fontSize} />
-				)}
-				<Text variant="labelLarge">{comment.author}</Text>
-				{comment.distinguished && (
-					<DistinguishedIndicator
-						distinguished={comment.distinguished}
-					/>
-				)}
-				{comment.flair && <Flair flair={comment.flair} />}
-				<Text variant="labelMedium">{comment.score}</Text>
-				<Text variant="labelMedium">{comment.time}</Text>
-			</View>
-			<Text variant="bodyLarge">{comment.text}</Text>
-		</ContentCard>
+		<View style={{ display: "flex", gap: 8 }}>
+			<ContentCard depth={comment.depth}>
+				<View style={styles.row}>
+					{comment.isStickied && (
+						<StickyIndicator iconSize={iconSize} />
+					)}
+					{comment.isLocked && (
+						<LockedIndicator iconSize={iconSize} />
+					)}
+					{comment.isSubmitter && (
+						<SubmitterIndicator fontSize={fontSize} />
+					)}
+					<Text variant="labelLarge">{comment.author}</Text>
+					{comment.distinguished && (
+						<DistinguishedIndicator
+							distinguished={comment.distinguished}
+						/>
+					)}
+					{comment.flair && <Flair flair={comment.flair} />}
+					<Text variant="labelMedium">{comment.score}</Text>
+					<Text variant="labelMedium">{comment.time}</Text>
+				</View>
+				<Text variant="bodyLarge">{comment.text}</Text>
+			</ContentCard>
+
+			{comment.depth > 0 && comment.childrenIDs && (
+				<ContentCard depth={comment.depth + 1}>
+					<Text>show replies ({comment.childrenIDs.length})</Text>
+				</ContentCard>
+			)}
+		</View>
 	);
 };
 
@@ -94,7 +106,7 @@ const MoreButton = ({ more }) => {
 	return (
 		<ContentCard depth={more.depth}>
 			<Text variant="bodySmall">
-				more comments ({more.replies.length})
+				more comments ({more.childrenIDs.length})
 			</Text>
 		</ContentCard>
 	);

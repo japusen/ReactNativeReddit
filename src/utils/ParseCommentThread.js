@@ -19,8 +19,8 @@ const parseCommentThread = (thread, commentsArray) => {
 			const comment = parseComment(data);
 			commentsArray.push(comment);
 
-			if (comment.replies) {
-				parseCommentThread(comment.replies, commentsArray);
+			if (data.replies !== "") {
+				parseCommentThread(data.replies.data.children, commentsArray);
 			}
 		} else {
 			const more = parseMore(data);
@@ -34,6 +34,10 @@ const parseComment = (data) => {
 		type: "comment",
 		id: data.id,
 		parentID: data.parent_id,
+		childrenIDs:
+			data.replies !== ""
+				? data.replies.data.children.map((reply) => reply.data.id)
+				: null,
 		author: data.author,
 		time: formatTime(data.created_utc),
 		score: formatNumberInThousands(data.score, "point"),
@@ -44,8 +48,8 @@ const parseComment = (data) => {
 		isLocked: data.locked,
 		hasScoreHidden: data.score_hidden,
 		isRemoved: data.no_follow,
-		replies: data.replies !== "" ? data.replies.data.children : null,
 		depth: data.depth,
+		visible: data.depth < 2,
 		distinguished: data.distinguished,
 		flair: parseFlair(
 			data.author_flair_type,
@@ -62,8 +66,9 @@ const parseMore = (data) => {
 		type: "more",
 		id: data.id,
 		parentID: data.parent_id.split("_")[1],
-		replies: data.children,
+		childrenIDs: data.children,
 		depth: data.depth,
+		visible: data.depth < 2,
 	};
 };
 

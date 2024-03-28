@@ -58,8 +58,9 @@ const PostDetails = ({ route, navigation }) => {
 		);
 	}
 
+	const visibleItems = commentThread.filter((item) => item.visible);
 	return (
-		<CommentThread threadItems={commentThread}>
+		<CommentThread threadItems={visibleItems}>
 			<PostHeader post={post} />
 		</CommentThread>
 	);
