@@ -104,11 +104,13 @@ const ContentCard = ({ depth, children }) => {
 	const marginLeft = depth * 8;
 
 	const borderLeftColor = borderColors[depth % borderColors.length];
+
+	const style =
+		depth > 0
+			? { ...styles.commentBar, marginLeft, borderLeftColor }
+			: { marginLeft };
 	return (
-		<Card
-			style={{ ...styles.commentBar, marginLeft, borderLeftColor }}
-			contentStyle={styles.card}
-		>
+		<Card style={style} contentStyle={styles.card}>
 			{children}
 		</Card>
 	);
