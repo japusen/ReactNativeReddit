@@ -56,7 +56,7 @@ const PostInfo = ({ post, onThumbnailClicked }) => {
 			onLongPress={() => {
 				setShowMoreOptions(!showMoreOptions);
 			}}
-			delayLongPress={100}
+			delayLongPress={300}
 		>
 			<View style={styles.postHeader}>
 				{hasThumbnail && (
