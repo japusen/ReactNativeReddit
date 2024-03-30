@@ -33,7 +33,7 @@ const parseComment = (data) => {
 	return {
 		type: "comment",
 		id: data.id,
-		parentID: data.parent_id,
+		parentID: data.parent_id.split("_")[1],
 		childrenIDs:
 			data.replies !== ""
 				? data.replies.data.children.map((reply) => reply.data.id)
@@ -50,6 +50,7 @@ const parseComment = (data) => {
 		isRemoved: data.no_follow,
 		depth: data.depth,
 		visible: data.depth < 2,
+		repliesHidden: data.replies !== "" && data.depth > 0,
 		distinguished: data.distinguished,
 		flair: parseFlair(
 			data.author_flair_type,
