@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { ActivityIndicator, Surface, Text, useTheme } from "react-native-paper";
 
 import { TokenContext } from "../../contexts/TokenContext";
@@ -58,9 +58,8 @@ const PostDetails = ({ route, navigation }) => {
 		);
 	}
 
-	const visibleItems = commentThread.filter((item) => item.visible);
 	return (
-		<CommentThread threadItems={visibleItems}>
+		<CommentThread threadItems={commentThread}>
 			<PostHeader post={post} />
 		</CommentThread>
 	);

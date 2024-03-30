@@ -1,5 +1,6 @@
-import { View, FlatList, StyleSheet } from "react-native";
+import { View, FlatList, StyleSheet, Pressable } from "react-native";
 import { Card, Text, useTheme } from "react-native-paper";
+import { useManageThread } from "../../hooks/useManageThread";
 
 import {
 	LockedIndicator,
@@ -13,7 +14,7 @@ const styles = StyleSheet.create({
 	card: {
 		padding: 10,
 		display: "flex",
-		gap: 8,
+		gap: 6,
 	},
 	row: {
 		display: "flex",
@@ -38,13 +39,16 @@ const ItemSeparator = () => <View style={styles.separator} />;
 
 const CommentThread = ({ threadItems, children }) => {
 	const theme = useTheme();
+
+	const { thread, showReplies } = useManageThread(threadItems);
+
 	return (
 		<FlatList
-			data={threadItems}
+			data={thread.filter((item) => item.visible)}
 			ItemSeparatorComponent={ItemSeparator}
 			renderItem={({ item }) =>
 				item.type === "comment" ? (
-					<CommentCard comment={item} />
+					<CommentCard comment={item} showReplies={showReplies} />
 				) : (
 					<MoreButton more={item} />
 				)
@@ -66,7 +70,7 @@ const CommentThread = ({ threadItems, children }) => {
 	);
 };
 
-const CommentCard = ({ comment }) => {
+const CommentCard = ({ comment, showReplies }) => {
 	return (
 		<View style={{ display: "flex", gap: 8 }}>
 			<ContentCard depth={comment.depth}>
@@ -93,12 +97,26 @@ const CommentCard = ({ comment }) => {
 				<Text variant="bodyLarge">{comment.text}</Text>
 			</ContentCard>
 
-			{comment.depth > 0 && comment.childrenIDs && (
-				<ContentCard depth={comment.depth + 1}>
-					<Text>show replies ({comment.childrenIDs.length})</Text>
-				</ContentCard>
+			{comment.repliesHidden && (
+				<HiddenReplies
+					depth={comment.depth}
+					repliesLength={comment.childrenIDs.length}
+					showReplies={() =>
+						showReplies(comment.id, comment.childrenIDs)
+					}
+				/>
 			)}
 		</View>
+	);
+};
+
+const HiddenReplies = ({ depth, showReplies, repliesLength }) => {
+	return (
+		<Pressable onPress={showReplies}>
+			<ContentCard depth={depth + 1}>
+				<Text>show replies ({repliesLength})</Text>
+			</ContentCard>
+		</Pressable>
 	);
 };
 
