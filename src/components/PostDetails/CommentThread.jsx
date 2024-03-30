@@ -40,15 +40,20 @@ const ItemSeparator = () => <View style={styles.separator} />;
 const CommentThread = ({ threadItems, children }) => {
 	const theme = useTheme();
 
-	const { thread, showReplies } = useManageThread(threadItems);
+	const { thread, showReplies, hideReplies } = useManageThread(threadItems);
 
+	const visibleComments = thread.filter((item) => item.visible);
 	return (
 		<FlatList
-			data={thread.filter((item) => item.visible)}
+			data={visibleComments}
 			ItemSeparatorComponent={ItemSeparator}
 			renderItem={({ item }) =>
 				item.type === "comment" ? (
-					<CommentCard comment={item} showReplies={showReplies} />
+					<CommentCard
+						comment={item}
+						showReplies={showReplies}
+						hideReplies={hideReplies}
+					/>
 				) : (
 					<MoreButton more={item} />
 				)
@@ -70,34 +75,41 @@ const CommentThread = ({ threadItems, children }) => {
 	);
 };
 
-const CommentCard = ({ comment, showReplies }) => {
+const CommentCard = ({ comment, showReplies, hideReplies }) => {
 	return (
 		<View style={{ display: "flex", gap: 8 }}>
-			<ContentCard depth={comment.depth}>
-				<View style={styles.row}>
-					{comment.isStickied && (
-						<StickyIndicator iconSize={iconSize} />
-					)}
-					{comment.isLocked && (
-						<LockedIndicator iconSize={iconSize} />
-					)}
-					{comment.isSubmitter && (
-						<SubmitterIndicator fontSize={fontSize} />
-					)}
-					<Text variant="labelLarge">{comment.author}</Text>
-					{comment.distinguished && (
-						<DistinguishedIndicator
-							distinguished={comment.distinguished}
-						/>
-					)}
-					{comment.flair && <Flair flair={comment.flair} />}
-					<Text variant="labelMedium">{comment.score}</Text>
-					<Text variant="labelMedium">{comment.time}</Text>
-				</View>
-				<Text variant="bodyLarge">{comment.text}</Text>
-			</ContentCard>
+			<Pressable
+				onLongPress={() => {
+					hideReplies(comment.id, comment.depth);
+				}}
+				delayLongPress={300}
+			>
+				<ContentCard depth={comment.depth}>
+					<View style={styles.row}>
+						{comment.isStickied && (
+							<StickyIndicator iconSize={iconSize} />
+						)}
+						{comment.isLocked && (
+							<LockedIndicator iconSize={iconSize} />
+						)}
+						{comment.isSubmitter && (
+							<SubmitterIndicator fontSize={fontSize} />
+						)}
+						<Text variant="labelLarge">{comment.author}</Text>
+						{comment.distinguished && (
+							<DistinguishedIndicator
+								distinguished={comment.distinguished}
+							/>
+						)}
+						{comment.flair && <Flair flair={comment.flair} />}
+						<Text variant="labelMedium">{comment.score}</Text>
+						<Text variant="labelMedium">{comment.time}</Text>
+					</View>
+					<Text variant="bodyLarge">{comment.text}</Text>
+				</ContentCard>
+			</Pressable>
 
-			{comment.repliesHidden && (
+			{comment.childrenIDs && comment.repliesHidden && (
 				<HiddenReplies
 					depth={comment.depth}
 					repliesLength={comment.childrenIDs.length}
