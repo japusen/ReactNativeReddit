@@ -2,34 +2,44 @@ import formatNumberInThousands from "./FormatNumberInThousands";
 import formatTime from "./FormatTime";
 import parseFlair from "./ParseFlair";
 
-const parseCommentTree = (thread) => {
+const parseCommentTree = (thread, hideComments = false, depthHidden = null) => {
 	const comments = new Array();
 
-	parseCommentThread(thread, comments);
+	parseCommentThread(thread, comments, hideComments, depthHidden);
 
 	return comments;
 };
 
-const parseCommentThread = (thread, commentsArray) => {
+const parseCommentThread = (
+	thread,
+	commentsArray,
+	hideComments,
+	depthToHide
+) => {
 	thread.forEach((element) => {
 		const kind = element.kind;
 		const data = element.data;
 
 		if (kind === "t1") {
-			const comment = parseComment(data);
+			const comment = parseComment(data, hideComments, depthToHide);
 			commentsArray.push(comment);
 
 			if (data.replies !== "") {
-				parseCommentThread(data.replies.data.children, commentsArray);
+				parseCommentThread(
+					data.replies.data.children,
+					commentsArray,
+					hideComments,
+					depthToHide
+				);
 			}
 		} else {
-			const more = parseMore(data);
+			const more = parseMore(data, hideComments, depthToHide);
 			commentsArray.push(more);
 		}
 	});
 };
 
-const parseComment = (data) => {
+const parseComment = (data, hideComments, depthToHide) => {
 	return {
 		type: "comment",
 		id: data.id,
@@ -49,7 +59,7 @@ const parseComment = (data) => {
 		hasScoreHidden: data.score_hidden,
 		isRemoved: data.no_follow,
 		depth: data.depth,
-		visible: data.depth < 2,
+		visible: hideComments ? data.depth < depthToHide : true,
 		repliesHidden: data.replies !== "" && data.depth > 0,
 		distinguished: data.distinguished,
 		flair: parseFlair(
@@ -62,14 +72,14 @@ const parseComment = (data) => {
 	};
 };
 
-const parseMore = (data) => {
+const parseMore = (data, hideComments, depthToHide) => {
 	return {
 		type: "more",
 		id: data.id,
 		parentID: data.parent_id.split("_")[1],
 		childrenIDs: data.children,
 		depth: data.depth,
-		visible: data.depth < 2,
+		visible: hideComments ? data.depth < depthToHide : true,
 	};
 };
 

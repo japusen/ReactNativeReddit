@@ -59,7 +59,11 @@ const PostDetails = ({ route, navigation }) => {
 	}
 
 	return (
-		<CommentThread threadItems={commentThread}>
+		<CommentThread
+			threadItems={commentThread}
+			linkID={post.fullname}
+			sort={sort}
+		>
 			<PostHeader post={post} />
 		</CommentThread>
 	);

@@ -50,9 +50,24 @@ export const useManageThread = (intialThread) => {
 		setManagedThread(updatedThread);
 	};
 
+	const replaceMore = (id, newComments) => {
+		const index = managedThread.findIndex((item) => item.id === id);
+
+		if (index === -1) {
+			console.log("more comment was not found");
+			return;
+		}
+
+		const updatedThread = managedThread.slice();
+		updatedThread.splice(index, 1, ...newComments);
+
+		setManagedThread(updatedThread);
+	};
+
 	return {
 		thread: managedThread,
 		showReplies,
 		hideReplies,
+		replaceMore,
 	};
 };

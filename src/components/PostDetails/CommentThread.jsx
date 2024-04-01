@@ -1,7 +1,10 @@
+import { useContext } from "react";
 import { View, FlatList, StyleSheet, Pressable } from "react-native";
 import { Card, Text, useTheme } from "react-native-paper";
 import { useManageThread } from "../../hooks/useManageThread";
+import { useMoreComments } from "../../hooks/useMoreComments";
 
+import { TokenContext } from "../../contexts/TokenContext";
 import {
 	LockedIndicator,
 	StickyIndicator,
@@ -37,12 +40,13 @@ const borderColors = ["blueviolet", "blue", "green", "gold", "orange", "red"];
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
-const CommentThread = ({ threadItems, children }) => {
+const CommentThread = ({ threadItems, children, linkID, sort }) => {
 	const theme = useTheme();
 
-	const { thread, showReplies, hideReplies } = useManageThread(threadItems);
+	const { thread, showReplies, hideReplies, replaceMore } =
+		useManageThread(threadItems);
 
-	const visibleComments = thread.filter((item) => item.visible);
+	const visibleComments = thread; //.filter((item) => item.visible);
 	return (
 		<FlatList
 			data={visibleComments}
@@ -55,7 +59,12 @@ const CommentThread = ({ threadItems, children }) => {
 						hideReplies={hideReplies}
 					/>
 				) : (
-					<MoreButton more={item} />
+					<MoreButton
+						more={item}
+						replaceMore={replaceMore}
+						linkID={linkID}
+						sort={sort}
+					/>
 				)
 			}
 			keyExtractor={(item) => item.id}
@@ -132,13 +141,31 @@ const HiddenReplies = ({ depth, showReplies, repliesLength }) => {
 	);
 };
 
-const MoreButton = ({ more }) => {
+const MoreButton = ({ more, replaceMore, linkID, sort }) => {
+	const token = useContext(TokenContext);
+	const fetch = useMoreComments(
+		token,
+		linkID,
+		more.childrenIDs,
+		sort,
+		more.depth
+	);
+
 	return (
-		<ContentCard depth={more.depth}>
-			<Text variant="bodySmall">
-				more comments ({more.childrenIDs.length})
-			</Text>
-		</ContentCard>
+		<Pressable
+			onPress={async () => {
+				const newComments = await fetch();
+				if (newComments) {
+					replaceMore(more.id, newComments);
+				}
+			}}
+		>
+			<ContentCard depth={more.depth}>
+				<Text variant="bodySmall">
+					more comments ({more.childrenIDs.length})
+				</Text>
+			</ContentCard>
+		</Pressable>
 	);
 };
 

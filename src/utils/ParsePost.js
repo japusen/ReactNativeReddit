@@ -58,6 +58,7 @@ const parsePost = (post) => {
 const commonProps = (post) => {
 	return {
 		id: post.id,
+		fullname: post.name,
 		title: post.title.trim(),
 		subreddit: post.subreddit,
 		author: post.author,
