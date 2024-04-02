@@ -1,6 +1,16 @@
 import { useState } from "react";
 
-export const useManageThread = (intialThread) => {
+export const useManageThread = () => {
+	const lastVisibleDepth = 1;
+
+	const [managedThread, setManagedThread] = useState([]);
+
+	const initializeThread = (initialThread) => {
+		setManagedThread(
+			threadWithVisibleProp(initialThread, lastVisibleDepth)
+		);
+	};
+
 	const threadWithVisibleProp = (thread, maxDepth) => {
 		return thread.map((item) => {
 			if (item.type === "comment") {
@@ -14,14 +24,6 @@ export const useManageThread = (intialThread) => {
 			}
 		});
 	};
-
-	const lastVisibleDepth = 1;
-	const modifiedThread = threadWithVisibleProp(
-		intialThread,
-		lastVisibleDepth
-	);
-
-	const [managedThread, setManagedThread] = useState(modifiedThread);
 
 	const showReplies = (parentID, childrenIDs) => {
 		const updatedThread = managedThread.map((comment) => {
@@ -89,8 +91,8 @@ export const useManageThread = (intialThread) => {
 	};
 
 	return {
-		// thread: managedThread,
 		thread: managedThread.filter((item) => item.visible),
+		initializeThread,
 		showReplies,
 		hideReplies,
 		replaceMore,

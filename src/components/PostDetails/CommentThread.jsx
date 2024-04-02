@@ -1,9 +1,9 @@
-import { useContext } from "react";
+import { useEffect, useContext } from "react";
 import { View, FlatList, StyleSheet, Pressable } from "react-native";
 import { Card, Text, useTheme } from "react-native-paper";
+
 import { useManageThread } from "../../hooks/useManageThread";
 import { useMoreComments } from "../../hooks/useMoreComments";
-
 import { TokenContext } from "../../contexts/TokenContext";
 import {
 	LockedIndicator,
@@ -43,8 +43,14 @@ const ItemSeparator = () => <View style={styles.separator} />;
 const CommentThread = ({ threadItems, children, linkID, sort }) => {
 	const theme = useTheme();
 
-	const { thread, showReplies, hideReplies, replaceMore } =
-		useManageThread(threadItems);
+	const { thread, initializeThread, showReplies, hideReplies, replaceMore } =
+		useManageThread();
+
+	useEffect(() => {
+		if (threadItems) {
+			initializeThread(threadItems);
+		}
+	}, [threadItems]);
 
 	return (
 		<FlatList
