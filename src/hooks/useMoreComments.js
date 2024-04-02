@@ -1,8 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getMoreComments } from "../requests/MoreComments";
-import parseCommentTree from "../utils/ParseCommentThread";
 
-export const useMoreComments = (token, linkID, childrenIDs, sort, depth) => {
+export const useMoreComments = (token, linkID, childrenIDs, sort) => {
 	const children = childrenIDs.join(", ");
 
 	const { refetch } = useQuery({
@@ -19,7 +18,7 @@ export const useMoreComments = (token, linkID, childrenIDs, sort, depth) => {
 				return null;
 			}
 
-			return parseCommentTree(data, depth + 2);
+			return data;
 		} catch {
 			console.log("error loading more comments");
 			return null;
