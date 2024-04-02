@@ -148,13 +148,7 @@ const HiddenReplies = ({ depth, showReplies, repliesLength }) => {
 
 const MoreButton = ({ more, replaceMore, linkID, sort }) => {
 	const token = useContext(TokenContext);
-	const fetch = useMoreComments(
-		token,
-		linkID,
-		more.childrenIDs,
-		sort,
-		more.depth
-	);
+	const fetch = useMoreComments(token, linkID, more.childrenIDs, sort);
 
 	return (
 		<Pressable
