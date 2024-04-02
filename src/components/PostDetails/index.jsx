@@ -25,6 +25,13 @@ const PostDetails = ({ route, navigation }) => {
 	const { postID, subreddit } = route.params;
 	const [sort, setSort] = useState("confidence");
 
+	useEffect(() => {
+		navigation.setOptions({
+			title: truncatedSubreddit,
+			headerRight: () => <CommentSortMenu setSort={setSort} />,
+		});
+	}, []);
+
 	const { post, commentThread, error, isLoading, isError } = usePostArticle(
 		token,
 		postID,
@@ -34,13 +41,6 @@ const PostDetails = ({ route, navigation }) => {
 
 	const truncatedSubreddit =
 		subreddit.length >= 25 ? subreddit.slice(0, 24) + "..." : subreddit;
-
-	useEffect(() => {
-		navigation.setOptions({
-			title: truncatedSubreddit,
-			headerRight: () => <CommentSortMenu setSort={setSort} />,
-		});
-	}, []);
 
 	if (isLoading) {
 		return (
