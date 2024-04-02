@@ -1,7 +1,27 @@
 import { useState } from "react";
 
 export const useManageThread = (intialThread) => {
-	const [managedThread, setManagedThread] = useState(intialThread);
+	const threadWithVisibleProp = (thread, maxDepth) => {
+		return thread.map((item) => {
+			if (item.type === "comment") {
+				return {
+					...item,
+					visible: item.depth <= maxDepth,
+					repliesHidden: item.depth >= maxDepth,
+				};
+			} else {
+				return { ...item, visible: item.depth <= maxDepth };
+			}
+		});
+	};
+
+	const lastVisibleDepth = 1;
+	const modifiedThread = threadWithVisibleProp(
+		intialThread,
+		lastVisibleDepth
+	);
+
+	const [managedThread, setManagedThread] = useState(modifiedThread);
 
 	const showReplies = (parentID, childrenIDs) => {
 		const updatedThread = managedThread.map((comment) => {
@@ -58,15 +78,19 @@ export const useManageThread = (intialThread) => {
 			return;
 		}
 
+		const moreDepth = managedThread.at(index).depth;
+		const maxDepth = moreDepth + lastVisibleDepth;
+		const newVisibleComments = threadWithVisibleProp(newComments, maxDepth);
+
 		const updatedThread = managedThread.slice();
-		updatedThread.splice(index, 1, ...newComments);
+		updatedThread.splice(index, 1, ...newVisibleComments);
 
 		setManagedThread(updatedThread);
 	};
 
 	return {
-		thread: managedThread,
-		// thread: managedThread.filter((item) => item.visible),
+		// thread: managedThread,
+		thread: managedThread.filter((item) => item.visible),
 		showReplies,
 		hideReplies,
 		replaceMore,

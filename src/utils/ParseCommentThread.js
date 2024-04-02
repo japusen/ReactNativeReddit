@@ -51,8 +51,6 @@ const parseComment = (data) => {
 		hasScoreHidden: data.score_hidden,
 		isRemoved: data.no_follow,
 		depth: data.depth,
-		// visible: data.depth < depthToHide,
-		// repliesHidden: data.replies !== "" && data.depth < depthToHide,
 		distinguished: data.distinguished,
 		flair: parseFlair(
 			data.author_flair_type,
@@ -71,7 +69,6 @@ const parseMore = (data) => {
 		parentID: data.parent_id.split("_")[1],
 		childrenIDs: data.children,
 		depth: data.depth,
-		// visible: data.depth < depthToHide,
 	};
 };
 
