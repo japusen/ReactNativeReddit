@@ -1,4 +1,6 @@
 import axios from "axios";
+import parsePost from "../utils/ParsePost";
+import parseCommentTree from "../utils/ParseCommentTree";
 
 export const getPostArticle = async (token, article, subreddit, sort) => {
 	const endpoint = `https://oauth.reddit.com/r/${subreddit}/comments/${article}`;
@@ -18,9 +20,11 @@ export const getPostArticle = async (token, article, subreddit, sort) => {
 
 	try {
 		const response = await axios.get(endpoint, config);
+		const postData = response.data[0].data.children[0].data;
+		const commentsData = response.data[1].data.children;
 		return {
-			post: response.data[0].data.children[0].data,
-			comments: response.data[1].data.children,
+			post: parsePost(postData),
+			comments: parseCommentTree(commentsData),
 		};
 	} catch (error) {
 		console.log(error);
