@@ -19,7 +19,7 @@ export const useMoreComments = (token, linkID, childrenIDs, sort, depth) => {
 				return null;
 			}
 
-			return parseCommentTree(data, true, depth + 2);
+			return parseCommentTree(data, depth + 2);
 		} catch {
 			console.log("error loading more comments");
 			return null;

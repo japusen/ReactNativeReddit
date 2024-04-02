@@ -66,6 +66,7 @@ export const useManageThread = (intialThread) => {
 
 	return {
 		thread: managedThread,
+		// thread: managedThread.filter((item) => item.visible),
 		showReplies,
 		hideReplies,
 		replaceMore,

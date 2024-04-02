@@ -46,7 +46,7 @@ const CommentThread = ({ threadItems, children, linkID, sort }) => {
 	const { thread, showReplies, hideReplies, replaceMore } =
 		useManageThread(threadItems);
 
-	const visibleComments = thread; //.filter((item) => item.visible);
+	const visibleComments = thread;
 	return (
 		<FlatList
 			data={visibleComments}
@@ -118,7 +118,7 @@ const CommentCard = ({ comment, showReplies, hideReplies }) => {
 				</ContentCard>
 			</Pressable>
 
-			{comment.childrenIDs && comment.repliesHidden && (
+			{/* {comment.childrenIDs && comment.repliesHidden && (
 				<HiddenReplies
 					depth={comment.depth}
 					repliesLength={comment.childrenIDs.length}
@@ -126,7 +126,7 @@ const CommentCard = ({ comment, showReplies, hideReplies }) => {
 						showReplies(comment.id, comment.childrenIDs)
 					}
 				/>
-			)}
+			)} */}
 		</View>
 	);
 };

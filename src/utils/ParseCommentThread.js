@@ -2,44 +2,36 @@ import formatNumberInThousands from "./FormatNumberInThousands";
 import formatTime from "./FormatTime";
 import parseFlair from "./ParseFlair";
 
-const parseCommentTree = (thread, hideComments = false, depthHidden = null) => {
+const parseCommentTree = (thread) => {
 	const comments = new Array();
 
-	parseCommentThread(thread, comments, hideComments, depthHidden);
+	parseCommentThread(thread, comments);
 
 	return comments;
 };
 
-const parseCommentThread = (
-	thread,
-	commentsArray,
-	hideComments,
-	depthToHide
-) => {
+const parseCommentThread = (thread, commentsArray) => {
 	thread.forEach((element) => {
 		const kind = element.kind;
 		const data = element.data;
 
 		if (kind === "t1") {
-			const comment = parseComment(data, hideComments, depthToHide);
+			const comment = parseComment(data);
 			commentsArray.push(comment);
 
 			if (data.replies !== "") {
-				parseCommentThread(
-					data.replies.data.children,
-					commentsArray,
-					hideComments,
-					depthToHide
-				);
+				parseCommentThread(data.replies.data.children, commentsArray);
 			}
 		} else {
-			const more = parseMore(data, hideComments, depthToHide);
-			commentsArray.push(more);
+			if (data.children.length > 0) {
+				const more = parseMore(data);
+				commentsArray.push(more);
+			}
 		}
 	});
 };
 
-const parseComment = (data, hideComments, depthToHide) => {
+const parseComment = (data) => {
 	return {
 		type: "comment",
 		id: data.id,
@@ -59,8 +51,8 @@ const parseComment = (data, hideComments, depthToHide) => {
 		hasScoreHidden: data.score_hidden,
 		isRemoved: data.no_follow,
 		depth: data.depth,
-		visible: hideComments ? data.depth < depthToHide : true,
-		repliesHidden: data.replies !== "" && data.depth > 0,
+		// visible: data.depth < depthToHide,
+		// repliesHidden: data.replies !== "" && data.depth < depthToHide,
 		distinguished: data.distinguished,
 		flair: parseFlair(
 			data.author_flair_type,
@@ -72,14 +64,14 @@ const parseComment = (data, hideComments, depthToHide) => {
 	};
 };
 
-const parseMore = (data, hideComments, depthToHide) => {
+const parseMore = (data) => {
 	return {
 		type: "more",
 		id: data.id,
 		parentID: data.parent_id.split("_")[1],
 		childrenIDs: data.children,
 		depth: data.depth,
-		visible: hideComments ? data.depth < depthToHide : true,
+		// visible: data.depth < depthToHide,
 	};
 };
 
