@@ -120,6 +120,19 @@ const SearchBar = ({ searchQuery, setSearchQuery }) => {
 const SearchResults = ({ results }) => {
 	const navigation = useNavigation();
 
+	const handleResult = (result) => {
+		if (result.name.startsWith("u_")) {
+			navToUserProfile(result.name);
+		} else {
+			navToSubreddit(result.name);
+		}
+	};
+
+	// TODO: handle user profile
+	const navToUserProfile = (username) => {
+		console.log("user", username);
+	};
+
 	const navToSubreddit = (name) => {
 		navigation.dispatch(DrawerActions.closeDrawer());
 		navigation.navigate("Subreddit", {
@@ -133,12 +146,7 @@ const SearchResults = ({ results }) => {
 				<Pressable
 					key={result.id}
 					onPress={() => {
-						if (result.name.startsWith("u_")) {
-							// TODO: handle user profile
-							console.log("user", result.name);
-						} else {
-							navToSubreddit(result.name);
-						}
+						handleResult(result);
 					}}
 				>
 					<View style={styles.resultItem}>
