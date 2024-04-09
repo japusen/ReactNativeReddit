@@ -3,7 +3,7 @@ import { View, FlatList, StyleSheet, Pressable } from "react-native";
 import { Card, Text, useTheme } from "react-native-paper";
 
 import { useManageThread } from "../../hooks/useManageThread";
-import { useMoreComments } from "../../hooks/useMoreComments";
+import { getMoreComments } from "../../requests/MoreComments";
 import { TokenContext } from "../../contexts/TokenContext";
 import {
 	LockedIndicator,
@@ -148,17 +148,23 @@ const HiddenReplies = ({ depth, showReplies, repliesLength }) => {
 
 const MoreButton = ({ more, replaceMore, linkID, sort }) => {
 	const token = useContext(TokenContext);
-	const fetch = useMoreComments(token, linkID, more.childrenIDs, sort);
+
+	const fetchMore = async () => {
+		const newComments = await getMoreComments(
+			token,
+			linkID,
+			more.parentID,
+			more.childrenIDs.join(", "),
+			sort
+		);
+
+		if (newComments) {
+			replaceMore(more.id, newComments);
+		}
+	};
 
 	return (
-		<Pressable
-			onPress={async () => {
-				const newComments = await fetch();
-				if (newComments) {
-					replaceMore(more.id, newComments);
-				}
-			}}
-		>
+		<Pressable onPress={fetchMore}>
 			<ContentCard depth={more.depth}>
 				<Text variant="bodySmall">
 					more comments ({more.childrenIDs.length})

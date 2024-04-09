@@ -1,7 +1,13 @@
 import axios from "axios";
-import parseCommentTree from "../utils/ParseCommentTree";
+import parseMoreList from "../utils/ParseMoreList";
 
-export const getMoreComments = async (token, linkID, children, sort) => {
+export const getMoreComments = async (
+	token,
+	linkID,
+	parentID,
+	children,
+	sort
+) => {
 	const endpoint = `https://oauth.reddit.com/api/morechildren/`;
 	const config = {
 		headers: {
@@ -20,9 +26,10 @@ export const getMoreComments = async (token, linkID, children, sort) => {
 	try {
 		const response = await axios.get(endpoint, config);
 		const things = response.data.json.data.things;
-		return parseCommentTree(things);
+		return parseMoreList(things, parentID);
 	} catch (error) {
 		console.log(error);
-		throw new Error("More comments could not be loaded");
+		return null;
+		// throw new Error("More comments could not be loaded");
 	}
 };
