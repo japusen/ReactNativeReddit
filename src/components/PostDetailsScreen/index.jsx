@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
 	},
 });
 
-const PostDetails = ({ route, navigation }) => {
+const PostDetailsScreen = ({ route, navigation }) => {
 	const theme = useTheme();
 	const token = useContext(TokenContext);
 	const { postID, subreddit } = route.params;
@@ -69,4 +69,4 @@ const PostDetails = ({ route, navigation }) => {
 	);
 };
 
-export default PostDetails;
+export default PostDetailsScreen;

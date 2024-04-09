@@ -6,7 +6,7 @@ import { Appbar } from "react-native-paper";
 import { FeedContext } from "../../contexts/FeedContext";
 import FeedScreen from "../FeedScreen";
 import ListingSortMenu from "../SortMenus/ListingSortMenu";
-import PostDetails from "../PostDetails";
+import PostDetailsScreen from "../PostDetailsScreen";
 import LinkScreen from "../LinkScreen";
 
 const Stack = createNativeStackNavigator();
@@ -55,7 +55,7 @@ const StackNav = ({ navigation }) => {
 				}}
 				component={LinkScreen}
 			/>
-			<Stack.Screen name="Post" component={PostDetails} />
+			<Stack.Screen name="Post" component={PostDetailsScreen} />
 		</Stack.Navigator>
 	);
 };
