@@ -150,18 +150,21 @@ const MoreButton = ({ more, replaceMore, linkID, sort }) => {
 	const token = useContext(TokenContext);
 	const [fetching, setFetching] = useState(false);
 
+	const parentID = more.parentID;
+	const childrenList = more.childrenIDs.join(", ");
+
 	const fetchMore = async () => {
 		setFetching(true);
-		const newComments = await getMoreComments(
+		const { newComments, newChildrenIDs } = await getMoreComments(
 			token,
 			linkID,
-			more.parentID,
-			more.childrenIDs.join(", "),
+			parentID,
+			childrenList,
 			sort
 		);
 
 		if (newComments) {
-			replaceMore(more.id, newComments);
+			replaceMore(more.id, newComments, parentID, newChildrenIDs);
 		}
 	};
 

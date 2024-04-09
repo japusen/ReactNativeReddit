@@ -72,7 +72,7 @@ export const useManageThread = () => {
 		setManagedThread(updatedThread);
 	};
 
-	const replaceMore = (id, newComments) => {
+	const replaceMore = (id, newComments, parentID, newChildrenIDs) => {
 		const index = managedThread.findIndex((item) => item.id === id);
 
 		if (index === -1) {
@@ -84,8 +84,18 @@ export const useManageThread = () => {
 		const maxDepth = moreDepth + lastVisibleDepth;
 		const newVisibleComments = threadWithVisibleProp(newComments, maxDepth);
 
-		const updatedThread = managedThread.slice();
+		let updatedThread = managedThread.slice();
 		updatedThread.splice(index, 1, ...newVisibleComments);
+
+		updatedThread = updatedThread.map((item) => {
+			if (item.id === parentID) {
+				return {
+					...item,
+					childrenIDs: item.childrenIDs.concat(newChildrenIDs),
+				};
+			}
+			return item;
+		});
 
 		setManagedThread(updatedThread);
 	};

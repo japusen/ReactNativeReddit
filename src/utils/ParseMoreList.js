@@ -3,7 +3,21 @@ import formatTime from "./FormatTime";
 import parseFlair from "./ParseFlair";
 
 const parseMoreList = (thread, parentID) => {
-	const comments = new Array();
+	const newComments = new Array();
+	const newChildrenIDs = new Array();
+
+	const addChildID = (pID, childID) => {
+		if (pID === parentID) {
+			newChildrenIDs.push(childID);
+		} else {
+			const parent = newComments.find((comment) => comment.id === pID);
+			if (parent) {
+				parent.childrenIDs = parent.childrenIDs
+					? parent.childrenIDs.concat(childID)
+					: [childID];
+			}
+		}
+	};
 
 	thread.forEach((element) => {
 		const kind = element.kind;
@@ -11,16 +25,17 @@ const parseMoreList = (thread, parentID) => {
 
 		if (kind === "t1") {
 			const comment = parseMoreComment(data);
-			comments.push(comment);
-		} else {
-			if (data.children.length > 0) {
-				const more = parseMore(data);
-				comments.push(more);
-			}
+			newComments.push(comment);
+			addChildID(comment.parentID, comment.id);
+		} else if (kind === "more" && data.children.length > 0) {
+			//ignore empty more objects
+			const more = parseMore(data);
+			newComments.push(more);
+			addChildID(more.parentID, more.id);
 		}
 	});
 
-	return comments;
+	return { newComments, newChildrenIDs };
 };
 
 const parseMoreComment = (data) => {
