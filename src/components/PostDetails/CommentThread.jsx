@@ -1,6 +1,6 @@
-import { useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { View, FlatList, StyleSheet, Pressable } from "react-native";
-import { Card, Text, useTheme } from "react-native-paper";
+import { ActivityIndicator, Card, Text, useTheme } from "react-native-paper";
 
 import { useManageThread } from "../../hooks/useManageThread";
 import { getMoreComments } from "../../requests/MoreComments";
@@ -148,8 +148,10 @@ const HiddenReplies = ({ depth, showReplies, repliesLength }) => {
 
 const MoreButton = ({ more, replaceMore, linkID, sort }) => {
 	const token = useContext(TokenContext);
+	const [fetching, setFetching] = useState(false);
 
 	const fetchMore = async () => {
+		setFetching(true);
 		const newComments = await getMoreComments(
 			token,
 			linkID,
@@ -162,6 +164,10 @@ const MoreButton = ({ more, replaceMore, linkID, sort }) => {
 			replaceMore(more.id, newComments);
 		}
 	};
+
+	if (fetching) {
+		return <ActivityIndicator animating={true} />;
+	}
 
 	return (
 		<Pressable onPress={fetchMore}>
