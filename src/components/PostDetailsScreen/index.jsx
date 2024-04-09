@@ -7,6 +7,7 @@ import { usePostArticle } from "../../hooks/usePostArticle";
 import CommentSortMenu from "../SortMenus/CommentsSortMenu";
 import PostHeader from "./PostHeader";
 import CommentThread from "./CommentThread";
+import truncatedSubredditName from "../../utils/TruncatedSubredditName";
 
 const styles = StyleSheet.create({
 	container: {
@@ -20,14 +21,13 @@ const styles = StyleSheet.create({
 });
 
 const PostDetailsScreen = ({ route, navigation }) => {
-	const theme = useTheme();
 	const token = useContext(TokenContext);
 	const { postID, subreddit } = route.params;
 	const [sort, setSort] = useState("confidence");
 
 	useEffect(() => {
 		navigation.setOptions({
-			title: truncatedSubreddit,
+			title: truncatedSubredditName(subreddit),
 			headerRight: () => <CommentSortMenu setSort={setSort} />,
 		});
 	}, []);
@@ -38,9 +38,6 @@ const PostDetailsScreen = ({ route, navigation }) => {
 		subreddit,
 		sort
 	);
-
-	const truncatedSubreddit =
-		subreddit.length >= 25 ? subreddit.slice(0, 24) + "..." : subreddit;
 
 	if (isLoading) {
 		return (
