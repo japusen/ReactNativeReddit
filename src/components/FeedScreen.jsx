@@ -1,12 +1,6 @@
 import { StyleSheet } from "react-native";
 import { useContext } from "react";
-import {
-	ActivityIndicator,
-	Surface,
-	Text,
-	Banner,
-	useTheme,
-} from "react-native-paper";
+import { ActivityIndicator, Surface, Text } from "react-native-paper";
 
 import { TokenContext } from "../contexts/TokenContext";
 import PostListing from "./common/PostListing";
@@ -16,20 +10,15 @@ import { useInfinitePosts } from "../hooks/useInfinitePosts";
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		//backgroundColor: "#fff",
-		//alignItems: "center",
-		//justifyContent: "center",
 	},
 	containerCentered: {
 		flex: 1,
-		//backgroundColor: "#fff",
 		alignItems: "center",
 		justifyContent: "center",
 	},
 });
 
 const FeedScreen = () => {
-	const theme = useTheme();
 	const token = useContext(TokenContext);
 	const { feed, sort, topSort } = useContext(FeedContext);
 
