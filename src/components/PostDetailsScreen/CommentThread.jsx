@@ -119,7 +119,9 @@ const CommentCard = ({ comment, showReplies, hideReplies }) => {
 						<Text variant="labelMedium">{comment.score}</Text>
 						<Text variant="labelMedium">{comment.time}</Text>
 					</View>
-					<Text variant="bodyLarge">{comment.text}</Text>
+					<Text selectable variant="bodyLarge">
+						{comment.text}
+					</Text>
 				</ContentCard>
 			</Pressable>
 
