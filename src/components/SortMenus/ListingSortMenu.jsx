@@ -1,11 +1,8 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { View } from "react-native";
 import { Appbar, Menu, Divider } from "react-native-paper";
-import { FeedContext } from "../../contexts/FeedContext";
 
-const ListingSortMenu = () => {
-	const { setSort, setTopSort } = useContext(FeedContext);
-
+const ListingSortMenu = ({ setSort, setTopSort }) => {
 	const [visible, setVisible] = useState(false);
 	const [subMenuVisible, setSubMenuVisible] = useState(false);
 

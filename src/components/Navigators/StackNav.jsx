@@ -13,7 +13,7 @@ const Stack = createNativeStackNavigator();
 
 const StackNav = ({ navigation }) => {
 	const theme = useTheme();
-	const { feed } = useContext(FeedContext);
+	const { feed, setSort, setTopSort } = useContext(FeedContext);
 
 	return (
 		<Stack.Navigator
@@ -40,7 +40,12 @@ const StackNav = ({ navigation }) => {
 							style={{ margin: 0 }}
 						/>
 					),
-					headerRight: () => <ListingSortMenu />,
+					headerRight: () => (
+						<ListingSortMenu
+							setSort={setSort}
+							setTopSort={setTopSort}
+						/>
+					),
 				}}
 			/>
 			<Stack.Screen
