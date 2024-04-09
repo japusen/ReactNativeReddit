@@ -118,13 +118,13 @@ const SearchBar = ({ searchQuery, setSearchQuery }) => {
 };
 
 const SearchResults = ({ results }) => {
-	const { setFeed, setSort } = useContext(FeedContext);
 	const navigation = useNavigation();
 
-	const changeFeed = (name) => {
-		setFeed(name);
-		setSort("hot");
+	const navToSubreddit = (name) => {
 		navigation.dispatch(DrawerActions.closeDrawer());
+		navigation.navigate("Subreddit", {
+			subreddit: name,
+		});
 	};
 
 	return (
@@ -137,7 +137,7 @@ const SearchResults = ({ results }) => {
 							// TODO: handle user profile
 							console.log("user", result.name);
 						} else {
-							changeFeed(result.name);
+							navToSubreddit(result.name);
 						}
 					}}
 				>
