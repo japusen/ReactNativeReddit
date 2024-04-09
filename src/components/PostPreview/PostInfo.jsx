@@ -91,15 +91,17 @@ const PostInfo = ({ post, onThumbnailClicked }) => {
 						<Text>{post.numComments}</Text>
 						<Text>{post.time}</Text>
 					</View>
-
-					{/* <Text>Type: {post.type}</Text> */}
 				</View>
 			</View>
 
 			{showMoreOptions && (
 				<PostOptions
 					onAccountPressed={() => console.log("account")}
-					onCommunityPressed={() => console.log("community")}
+					onCommunityPressed={() => {
+						navigation.navigate("Subreddit", {
+							subreddit: post.subreddit,
+						});
+					}}
 					onBrowserPressed={() => console.log("web")}
 					onSharePressed={() => console.log("share")}
 					onFilterPressed={() => console.log("filter")}

@@ -8,6 +8,7 @@ import FeedScreen from "../FeedScreen";
 import ListingSortMenu from "../SortMenus/ListingSortMenu";
 import PostDetailsScreen from "../PostDetailsScreen";
 import LinkScreen from "../LinkScreen";
+import SubredditScreen from "../SubredditScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -56,6 +57,7 @@ const StackNav = ({ navigation }) => {
 				component={LinkScreen}
 			/>
 			<Stack.Screen name="Post" component={PostDetailsScreen} />
+			<Stack.Screen name="Subreddit" component={SubredditScreen} />
 		</Stack.Navigator>
 	);
 };
