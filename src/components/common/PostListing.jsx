@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 	},
 	separator: {
-		marginTop: 10,
+		marginTop: 6,
 	},
 });
 
