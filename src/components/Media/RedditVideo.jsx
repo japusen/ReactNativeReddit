@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ResizeMode } from "expo-av";
 import VideoPlayer from "expo-video-player";
+import { useIsFocused } from "@react-navigation/native";
 
 const RedditVideo = ({
 	url,
@@ -8,11 +9,13 @@ const RedditVideo = ({
 	autoplay = true,
 	showControls = false,
 }) => {
+	const isFocused = useIsFocused();
 	const [isMute, setIsMute] = useState(false);
+
 	return (
 		<VideoPlayer
 			videoProps={{
-				shouldPlay: autoplay,
+				shouldPlay: autoplay && isFocused,
 				resizeMode: ResizeMode.CONTAIN,
 				source: {
 					uri: url,
