@@ -35,8 +35,8 @@ const PostListing = ({ posts, onEndReached }) => {
 			ItemSeparatorComponent={ItemSeparator}
 			renderItem={({ item }) => <PostPreview post={item} />}
 			keyExtractor={(item) => item.id}
-			style={{
-				paddingTop: 10,
+			contentContainerStyle={{
+				paddingVertical: 10,
 				backgroundColor: theme.colors.surfaceVariant,
 			}}
 		/>
