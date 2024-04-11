@@ -111,6 +111,7 @@ const galleryPost = (post) => {
 		};
 	}
 
+	console.log("removed?", post.title);
 	return linkPost(post);
 };
 
@@ -168,23 +169,33 @@ const crossPost = (post) => {
 };
 
 const parseRedditVideo = (post) => {
-	const dashURL = post.media.reddit_video.dash_url;
+	if (post.media) {
+		const dashURL = post.media.reddit_video.dash_url;
 
-	const hostedAspectRatio = calculateAspectRatio(
-		post.media.reddit_video.width,
-		post.media.reddit_video.height
-	);
-	return redditVideoPost(post, dashURL, hostedAspectRatio);
+		const hostedAspectRatio = calculateAspectRatio(
+			post.media.reddit_video.width,
+			post.media.reddit_video.height
+		);
+		return redditVideoPost(post, dashURL, hostedAspectRatio);
+	}
+
+	console.log("removed?", post.title);
+	return linkPost(post);
 };
 
 const parseExternalVideo = (post) => {
-	const extractedURL = extractVideoSrcFromHTML(post.media.oembed.html);
+	if (post.media) {
+		const extractedURL = extractVideoSrcFromHTML(post.media.oembed.html);
 
-	const externalAspectRatio = calculateAspectRatio(
-		post.media.oembed.width,
-		post.media.oembed.height
-	);
-	return externalVideoPost(post, extractedURL, externalAspectRatio);
+		const externalAspectRatio = calculateAspectRatio(
+			post.media.oembed.width,
+			post.media.oembed.height
+		);
+		return externalVideoPost(post, extractedURL, externalAspectRatio);
+	}
+
+	console.log("removed?", post.title);
+	return linkPost(post);
 };
 
 const parseLink = (post) => {
