@@ -122,15 +122,17 @@ const SearchResults = ({ results }) => {
 
 	const handleResult = (result) => {
 		if (result.name.startsWith("u_")) {
-			navToUserProfile(result.name);
+			navToUserProfile(result.name.split("_")[1]);
 		} else {
 			navToSubreddit(result.name);
 		}
 	};
 
-	// TODO: handle user profile
 	const navToUserProfile = (username) => {
-		console.log("user", username);
+		navigation.dispatch(DrawerActions.closeDrawer());
+		navigation.navigate("User", {
+			username: username,
+		});
 	};
 
 	const navToSubreddit = (name) => {
