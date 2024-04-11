@@ -1,5 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getSubredditListing } from "../requests/SubredditListing";
+import { getUserSubmissions } from "../requests/UserContent";
 import parsePost from "../utils/ParsePost";
 
 const getPostsByPage = (data) => {
@@ -19,7 +20,7 @@ const getPostsByPage = (data) => {
 	return posts;
 };
 
-export const useInfinitePosts = (token, feed, sort, topSort) => {
+const useInfinitePosts = (token, requestFn, path, sort, topSort) => {
 	const {
 		isPending,
 		isError,
@@ -30,9 +31,9 @@ export const useInfinitePosts = (token, feed, sort, topSort) => {
 		isFetching,
 		isFetchingNextPage,
 	} = useInfiniteQuery({
-		queryKey: ["getSubredditListing", feed, sort, topSort],
+		queryKey: ["infinitePosts", path, sort, topSort],
 		queryFn: ({ pageParam }) =>
-			getSubredditListing(token, feed, sort, topSort, pageParam),
+			requestFn(token, path, sort, topSort, pageParam),
 		initialPageParam: null,
 		getNextPageParam: (lastPage, _) => lastPage.after,
 	});
@@ -49,4 +50,12 @@ export const useInfinitePosts = (token, feed, sort, topSort) => {
 		isFetchingNextPage,
 		fetchMorePosts,
 	};
+};
+
+export const useSubredditListing = (token, feed, sort, topSort) => {
+	return useInfinitePosts(token, getSubredditListing, feed, sort, topSort);
+};
+
+export const useProfilePostListing = (token, username, sort, topSort) => {
+	return useInfinitePosts(token, getUserSubmissions, username, sort, topSort);
 };
