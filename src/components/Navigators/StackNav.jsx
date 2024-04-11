@@ -9,6 +9,7 @@ import ListingSortMenu from "../SortMenus/ListingSortMenu";
 import PostDetailsScreen from "../PostDetailsScreen";
 import LinkScreen from "../LinkScreen";
 import SubredditScreen from "../SubredditScreen";
+import UserProfileScreen from "../UserProfileScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -58,6 +59,7 @@ const StackNav = ({ navigation }) => {
 			/>
 			<Stack.Screen name="Post" component={PostDetailsScreen} />
 			<Stack.Screen name="Subreddit" component={SubredditScreen} />
+			<Stack.Screen name="User" component={UserProfileScreen} />
 		</Stack.Navigator>
 	);
 };
