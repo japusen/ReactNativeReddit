@@ -5,7 +5,7 @@ import { ActivityIndicator, Surface, Text } from "react-native-paper";
 import { TokenContext } from "../contexts/TokenContext";
 import PostListing from "./common/PostListing";
 import { FeedContext } from "../contexts/FeedContext";
-import { useInfinitePosts } from "../hooks/useInfinitePosts";
+import { useSubredditListing } from "../hooks/usePostListing";
 
 const styles = StyleSheet.create({
 	container: {
@@ -29,7 +29,7 @@ const FeedScreen = () => {
 		error,
 		isFetchingNextPage,
 		fetchMorePosts,
-	} = useInfinitePosts(token, feed, sort, topSort);
+	} = useSubredditListing(token, feed, sort, topSort);
 
 	if (isPending) {
 		return (
