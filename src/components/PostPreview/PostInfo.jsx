@@ -96,12 +96,16 @@ const PostInfo = ({ post, onThumbnailClicked }) => {
 
 			{showMoreOptions && (
 				<PostOptions
-					onAccountPressed={() => console.log("account")}
-					onCommunityPressed={() => {
+					onAccountPressed={() =>
+						navigation.navigate("User", {
+							username: post.author,
+						})
+					}
+					onCommunityPressed={() =>
 						navigation.navigate("Subreddit", {
 							subreddit: post.subreddit,
-						});
-					}}
+						})
+					}
 					onBrowserPressed={() => console.log("web")}
 					onSharePressed={() => console.log("share")}
 					onFilterPressed={() => console.log("filter")}
