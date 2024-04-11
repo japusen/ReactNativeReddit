@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from "react";
 import { ActivityIndicator, Surface, Text } from "react-native-paper";
 
 import { TokenContext } from "../contexts/TokenContext";
-import { useInfinitePosts } from "../hooks/useInfinitePosts";
+import { useSubredditListing } from "../hooks/usePostListing";
 import PostListing from "./common/PostListing";
 import ListingSortMenu from "./SortMenus/ListingSortMenu";
 import truncatedSubredditName from "../utils/TruncatedSubredditName";
@@ -41,7 +41,7 @@ const SubredditScreen = ({ route, navigation }) => {
 		error,
 		isFetchingNextPage,
 		fetchMorePosts,
-	} = useInfinitePosts(token, subreddit, sort, topSort);
+	} = useSubredditListing(token, subreddit, sort, topSort);
 
 	if (isPending) {
 		return (
