@@ -92,19 +92,26 @@ const selfPost = (post) => {
 };
 
 const galleryPost = (post) => {
-	const gallery = parseGalleryImages(post.media_metadata, post.gallery_data);
-	const aspectRatios = gallery.map((item) => item.aspectRatio);
-	const minAspectRatio = Math.min(...aspectRatios);
+	if (post.gallery_data) {
+		const gallery = parseGalleryImages(
+			post.media_metadata,
+			post.gallery_data
+		);
+		const aspectRatios = gallery.map((item) => item.aspectRatio);
+		const minAspectRatio = Math.min(...aspectRatios);
 
-	return {
-		...commonProps(post),
-		type: "gallery",
-		thumbnail: isValidThumbnail(post.thumbnail)
-			? post.thumbnail
-			: gallery[0].url,
-		gallery,
-		aspectRatio: minAspectRatio,
-	};
+		return {
+			...commonProps(post),
+			type: "gallery",
+			thumbnail: isValidThumbnail(post.thumbnail)
+				? post.thumbnail
+				: gallery[0].url,
+			gallery,
+			aspectRatio: minAspectRatio,
+		};
+	}
+
+	return linkPost(post);
 };
 
 const imagePost = (post) => {
