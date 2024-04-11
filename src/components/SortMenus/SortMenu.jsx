@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Appbar, Menu } from "react-native-paper";
 import SortItems from "./SortItems";
 
-const SortMenu = ({ sorts, setSort }) => {
+const SortMenu = ({ sorts, setSort, icon = "sort" }) => {
 	const [visible, setVisible] = useState(false);
 
 	const openMenu = () => setVisible(true);
@@ -17,7 +17,7 @@ const SortMenu = ({ sorts, setSort }) => {
 		<Menu
 			visible={visible}
 			onDismiss={closeMenu}
-			anchor={<Appbar.Action icon="sort" onPress={openMenu} />}
+			anchor={<Appbar.Action icon={icon} onPress={openMenu} />}
 		>
 			{visible && (
 				<SortItems items={sorts} onSortSelected={onSortSelected} />
