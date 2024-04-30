@@ -91,7 +91,9 @@ export const useManageThread = () => {
 			if (item.id === parentID) {
 				return {
 					...item,
-					childrenIDs: item.childrenIDs.concat(newChildrenIDs),
+					childrenIDs: item.childrenIDs
+						.slice(0, -1)
+						.concat(newChildrenIDs),
 				};
 			}
 			return item;
