@@ -1,6 +1,12 @@
 import { useState, useEffect, useContext } from "react";
 import { View, FlatList, StyleSheet, Pressable } from "react-native";
-import { ActivityIndicator, Card, Text, useTheme } from "react-native-paper";
+import {
+	ActivityIndicator,
+	Badge,
+	Card,
+	Text,
+	useTheme,
+} from "react-native-paper";
 
 import { useManageThread } from "../../hooks/useManageThread";
 import { getMoreComments } from "../../requests/MoreComments";
@@ -92,13 +98,17 @@ const CommentThread = ({ threadItems, children, linkID, sort }) => {
 const CommentCard = ({ comment, showReplies, hideReplies }) => {
 	return (
 		<View style={{ display: "flex", gap: 8 }}>
-			<Pressable
-				onLongPress={() => {
-					hideReplies(comment.id, comment.depth);
-				}}
-				delayLongPress={300}
-			>
-				<ContentCard depth={comment.depth}>
+			<ContentCard depth={comment.depth}>
+				<Pressable
+					onLongPress={() => {
+						if (comment.childrenIDs) {
+							comment.repliesHidden
+								? showReplies(comment.id, comment.childrenIDs)
+								: hideReplies(comment.id, comment.depth);
+						}
+					}}
+					delayLongPress={100}
+				>
 					<View style={styles.row}>
 						{comment.isStickied && (
 							<StickyIndicator iconSize={iconSize} />
@@ -118,33 +128,32 @@ const CommentCard = ({ comment, showReplies, hideReplies }) => {
 						{comment.flair && <Flair flair={comment.flair} />}
 						<Text variant="labelMedium">{comment.score}</Text>
 						<Text variant="labelMedium">{comment.time}</Text>
+						{comment.childrenIDs && comment.repliesHidden && (
+							<HiddenReplies count={comment.childrenIDs.length} />
+						)}
 					</View>
-					<Text selectable variant="bodyLarge">
-						{comment.text}
-					</Text>
-				</ContentCard>
-			</Pressable>
-
-			{comment.childrenIDs && comment.repliesHidden && (
-				<HiddenReplies
-					depth={comment.depth}
-					repliesLength={comment.childrenIDs.length}
-					showReplies={() =>
-						showReplies(comment.id, comment.childrenIDs)
-					}
-				/>
-			)}
+				</Pressable>
+				<Text selectable variant="bodyLarge">
+					{comment.text}
+				</Text>
+			</ContentCard>
 		</View>
 	);
 };
 
-const HiddenReplies = ({ depth, showReplies, repliesLength }) => {
+const HiddenReplies = ({ count }) => {
+	const theme = useTheme();
+
+	const badgeStyle = {
+		backgroundColor: theme.colors.onSurfaceVariant,
+	};
+
 	return (
-		<Pressable onPress={showReplies}>
-			<ContentCard depth={depth + 1}>
-				<Text>show replies ({repliesLength})</Text>
-			</ContentCard>
-		</Pressable>
+		<View style={{ flex: 1 }}>
+			<Badge size={16} style={badgeStyle}>
+				+{count}
+			</Badge>
+		</View>
 	);
 };
 
