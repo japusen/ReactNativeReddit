@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import { View, FlatList, StyleSheet, Pressable } from "react-native";
 import {
 	ActivityIndicator,
@@ -49,14 +49,8 @@ const ItemSeparator = () => <View style={styles.separator} />;
 const CommentThread = ({ threadItems, children, linkID, sort }) => {
 	const theme = useTheme();
 
-	const { thread, initializeThread, showReplies, hideReplies, replaceMore } =
-		useManageThread();
-
-	useEffect(() => {
-		if (threadItems) {
-			initializeThread(threadItems);
-		}
-	}, [threadItems]);
+	const { thread, handleShowReplies, handleHideReplies, handleFetchMore } =
+		useManageThread(threadItems);
 
 	return (
 		<FlatList
@@ -66,13 +60,13 @@ const CommentThread = ({ threadItems, children, linkID, sort }) => {
 				item.type === "comment" ? (
 					<CommentCard
 						comment={item}
-						showReplies={showReplies}
-						hideReplies={hideReplies}
+						showReplies={handleShowReplies}
+						hideReplies={handleHideReplies}
 					/>
 				) : (
 					<MoreButton
 						more={item}
-						replaceMore={replaceMore}
+						replaceMore={handleFetchMore}
 						linkID={linkID}
 						sort={sort}
 					/>
@@ -175,7 +169,13 @@ const MoreButton = ({ more, replaceMore, linkID, sort }) => {
 		);
 
 		if (newComments) {
-			replaceMore(more.id, newComments, parentID, newChildrenIDs);
+			replaceMore(
+				more.id,
+				more.depth,
+				newComments,
+				parentID,
+				newChildrenIDs
+			);
 		}
 	};
 

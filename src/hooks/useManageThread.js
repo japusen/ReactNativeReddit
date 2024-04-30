@@ -1,112 +1,66 @@
-import { useState } from "react";
+import { useReducer } from "react";
 
-export const useManageThread = () => {
-	const lastVisibleDepth = 1;
+import commentsReducer from "../reducers/CommentsReducer";
 
-	const [managedThread, setManagedThread] = useState([]);
-
-	const initializeThread = (initialThread) => {
-		setManagedThread(
-			threadWithVisibleProp(initialThread, lastVisibleDepth)
-		);
-	};
-
-	const threadWithVisibleProp = (thread, maxDepth) => {
-		return thread.map((item) => {
-			if (item.type === "comment") {
-				return {
-					...item,
-					visible: item.depth <= maxDepth,
-					repliesHidden: item.depth >= maxDepth,
-				};
-			} else {
-				return { ...item, visible: item.depth <= maxDepth };
-			}
-		});
-	};
-
-	const showReplies = (parentID, childrenIDs) => {
-		const updatedThread = managedThread.map((comment) => {
-			if (comment.id === parentID) {
-				return { ...comment, repliesHidden: false };
-			}
-			if (childrenIDs.includes(comment.id)) {
-				return { ...comment, visible: true };
-			}
-			return comment;
-		});
-		setManagedThread(updatedThread);
-	};
-
-	const findTerminatingIndex = (start, depth) => {
-		const arrayEnd = managedThread.length;
-		while (start < arrayEnd) {
-			if (managedThread[start].depth === depth) return start;
-			start += 1;
+const threadWithVisibleProp = (thread, maxDepth) => {
+	return thread.map((item) => {
+		if (item.type === "comment") {
+			return {
+				...item,
+				visible: item.depth <= maxDepth,
+				repliesHidden: item.depth >= maxDepth,
+			};
+		} else {
+			return { ...item, visible: item.depth <= maxDepth };
 		}
-		return arrayEnd;
+	});
+};
+
+export const useManageThread = (initialThread, lastVisibleDepth = 1) => {
+	const [thread, dispatch] = useReducer(
+		commentsReducer,
+		threadWithVisibleProp(initialThread, lastVisibleDepth)
+	);
+
+	const handleShowReplies = (parentID, childrenIDs) => {
+		dispatch({
+			type: "showReplies",
+			parentID,
+			childrenIDs,
+		});
 	};
 
-	const hideReplies = (parentID, startingDepth) => {
-		const parentIndex = managedThread.findIndex((e) => e.id === parentID);
-		const endIndex = findTerminatingIndex(parentIndex + 1, startingDepth);
-
-		const updatedThread = managedThread.map((item, index) => {
-			if (index === parentIndex) {
-				return { ...item, repliesHidden: true };
-			}
-			if (index > parentIndex && index < endIndex) {
-				if (item.type === "comment" && item.visible) {
-					return {
-						...item,
-						visible: false,
-						repliesHidden: true,
-					};
-				} else if (item.type === "more" && item.visible) {
-					return { ...item, visible: false };
-				}
-			}
-			return item;
+	const handleHideReplies = (parentID, startingDepth) => {
+		dispatch({
+			type: "hideReplies",
+			parentID,
+			startingDepth,
 		});
-
-		setManagedThread(updatedThread);
 	};
 
-	const replaceMore = (id, newComments, parentID, newChildrenIDs) => {
-		const index = managedThread.findIndex((item) => item.id === id);
-
-		if (index === -1) {
-			console.log("more comment was not found");
-			return;
-		}
-
-		const moreDepth = managedThread.at(index).depth;
-		const maxDepth = moreDepth + lastVisibleDepth;
-		const newVisibleComments = threadWithVisibleProp(newComments, maxDepth);
-
-		let updatedThread = managedThread.slice();
-		updatedThread.splice(index, 1, ...newVisibleComments);
-
-		updatedThread = updatedThread.map((item) => {
-			if (item.id === parentID) {
-				return {
-					...item,
-					childrenIDs: item.childrenIDs
-						.slice(0, -1)
-						.concat(newChildrenIDs),
-				};
-			}
-			return item;
+	const handleFetchMore = (
+		id,
+		moreDepth,
+		newComments,
+		parentID,
+		newChildrenIDs
+	) => {
+		dispatch({
+			type: "fetchMore",
+			id,
+			newComments: threadWithVisibleProp(
+				newComments,
+				moreDepth + lastVisibleDepth
+			),
+			parentID,
+			newChildrenIDs,
 		});
-
-		setManagedThread(updatedThread);
 	};
 
 	return {
-		thread: managedThread.filter((item) => item.visible),
-		initializeThread,
-		showReplies,
-		hideReplies,
-		replaceMore,
+		thread: thread.filter((item) => item.visible),
+		handleShowReplies,
+		handleHideReplies,
+		handleFetchMore,
 	};
 };
