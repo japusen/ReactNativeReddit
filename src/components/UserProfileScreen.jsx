@@ -1,7 +1,10 @@
 import { useState, useEffect, useContext } from "react";
 
 import { TokenContext } from "../contexts/TokenContext";
-import { useProfilePostListing } from "../hooks/usePostListing";
+import {
+	useProfilePostListing,
+	useProfileCommentListing,
+} from "../hooks/useInfiniteListing";
 import PostListingScreen from "./common/PostListingScreen";
 import ListingSortMenu from "./SortMenus/ListingSortMenu";
 import truncatedSubredditName from "../utils/TruncatedSubredditName";
@@ -55,10 +58,10 @@ const UserPosts = ({ token, username, sort, topSort }) => {
 	const {
 		isPending,
 		isError,
-		posts,
+		content,
 		error,
 		isFetchingNextPage,
-		fetchMorePosts,
+		fetchMore,
 	} = useProfilePostListing(token, username, sort, topSort);
 
 	return (
@@ -66,14 +69,23 @@ const UserPosts = ({ token, username, sort, topSort }) => {
 			isPending={isPending}
 			isError={isError}
 			error={error}
-			posts={posts}
-			fetchMorePosts={fetchMorePosts}
+			posts={content}
+			fetchMorePosts={fetchMore}
 			isFetchingNextPage={isFetchingNextPage}
 		/>
 	);
 };
 
 const UserComments = ({ token, username, sort, topSort }) => {
+	const {
+		isPending,
+		isError,
+		content,
+		error,
+		isFetchingNextPage,
+		fetchMore,
+	} = useProfileCommentListing(token, username, sort, topSort);
+
 	return null;
 };
 

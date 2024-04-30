@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 
 import { TokenContext } from "../contexts/TokenContext";
-import { useSubredditListing } from "../hooks/usePostListing";
+import { useSubredditListing } from "../hooks/useInfiniteListing";
 import PostListingScreen from "./common/PostListingScreen";
 import ListingSortMenu from "./SortMenus/ListingSortMenu";
 import truncatedSubredditName from "../utils/TruncatedSubredditName";
@@ -24,10 +24,10 @@ const SubredditScreen = ({ route, navigation }) => {
 	const {
 		isPending,
 		isError,
-		posts,
+		content,
 		error,
 		isFetchingNextPage,
-		fetchMorePosts,
+		fetchMore,
 	} = useSubredditListing(token, subreddit, sort, topSort);
 
 	return (
@@ -35,8 +35,8 @@ const SubredditScreen = ({ route, navigation }) => {
 			isPending={isPending}
 			isError={isError}
 			error={error}
-			posts={posts}
-			fetchMorePosts={fetchMorePosts}
+			posts={content}
+			fetchMorePosts={fetchMore}
 			isFetchingNextPage={isFetchingNextPage}
 		/>
 	);

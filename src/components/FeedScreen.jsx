@@ -2,7 +2,7 @@ import { useContext } from "react";
 
 import { TokenContext } from "../contexts/TokenContext";
 import { FeedContext } from "../contexts/FeedContext";
-import { useSubredditListing } from "../hooks/usePostListing";
+import { useSubredditListing } from "../hooks/useInfiniteListing";
 import PostListingScreen from "./common/PostListingScreen";
 
 const FeedScreen = () => {
@@ -12,10 +12,10 @@ const FeedScreen = () => {
 	const {
 		isPending,
 		isError,
-		posts,
+		content,
 		error,
 		isFetchingNextPage,
-		fetchMorePosts,
+		fetchMore,
 	} = useSubredditListing(token, feed, sort, topSort);
 
 	return (
@@ -23,8 +23,8 @@ const FeedScreen = () => {
 			isPending={isPending}
 			isError={isError}
 			error={error}
-			posts={posts}
-			fetchMorePosts={fetchMorePosts}
+			posts={content}
+			fetchMorePosts={fetchMore}
 			isFetchingNextPage={isFetchingNextPage}
 		/>
 	);
