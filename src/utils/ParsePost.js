@@ -1,4 +1,4 @@
-import formatNumberInThousands from "./FormatNumberInThousands";
+import { formatScore, formatNumComments } from "./FormatNumberInThousands";
 import formatTime from "./FormatTime";
 import calculateAspectRatio from "./CalculateAspectRatio";
 import parseFlair from "./ParseFlair";
@@ -62,8 +62,8 @@ const commonProps = (post) => {
 		title: post.title.trim(),
 		subreddit: post.subreddit,
 		author: post.author,
-		score: formatNumberInThousands(post.score, "point"),
-		numComments: formatNumberInThousands(post.num_comments, "comment"),
+		score: formatScore(post.score),
+		numComments: formatNumComments(post.num_comments),
 		isNsfw: post.over_18,
 		isSpoiler: post.spoiler,
 		isLocked: post.locked,

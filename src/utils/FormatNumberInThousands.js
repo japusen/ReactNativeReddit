@@ -10,4 +10,6 @@ const formatNumberInThousands = (value, name) => {
 	}
 };
 
-export default formatNumberInThousands;
+export const formatScore = (value) => formatNumberInThousands(value, "point");
+export const formatNumComments = (value) =>
+	formatNumberInThousands(value, "comment");
