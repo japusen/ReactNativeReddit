@@ -1,4 +1,4 @@
-import formatNumberInThousands from "./FormatNumberInThousands";
+import { formatScore } from "./FormatNumberInThousands";
 import formatTime from "./FormatTime";
 import parseFlair from "./ParseFlair";
 
@@ -42,7 +42,7 @@ const parseComment = (data) => {
 				: null,
 		author: data.author,
 		time: formatTime(data.created_utc),
-		score: formatNumberInThousands(data.score, "point"),
+		score: formatScore(data.score),
 		text: data.body,
 		html: data.body_html,
 		isStickied: data.stickied || data.pinned,

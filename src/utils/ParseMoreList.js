@@ -46,7 +46,7 @@ const parseMoreComment = (data) => {
 		childrenIDs: null,
 		author: data.author,
 		time: formatTime(data.created_utc),
-		score: formatNumberInThousands(data.score, "point"),
+		score: formatScore(data.score),
 		text: data.body,
 		html: data.body_html,
 		isStickied: data.stickied || data.pinned,
