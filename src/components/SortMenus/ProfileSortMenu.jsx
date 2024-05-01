@@ -6,7 +6,9 @@ const ProfileSortMenu = ({ setType }) => {
 		{ name: "comments", title: "Comments", icon: "comment-outline" },
 	];
 
-	return <SortMenu sorts={sorts} setSort={setType} icon="menu-swap" />;
+	return (
+		<SortMenu sorts={sorts} setSort={setType} icon="filter-menu-outline" />
+	);
 };
 
 export default ProfileSortMenu;
