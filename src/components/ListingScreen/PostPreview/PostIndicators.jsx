@@ -6,7 +6,7 @@ import {
 	NsfwIndicator,
 	SpoilerIndicator,
 	RemovedIndicator,
-} from "../common/Indicators";
+} from "../../common/Indicators";
 
 const iconSize = 14;
 const fontSize = 10;

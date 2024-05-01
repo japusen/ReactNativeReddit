@@ -1,5 +1,5 @@
 import { useProfilePostListing } from "../../hooks/useInfiniteListing";
-import PostListingScreen from "../PostListingScreen";
+import { PostListingScreen } from "../ListingScreen";
 
 const UserPosts = ({ token, username, sort, topSort }) => {
 	const {

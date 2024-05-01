@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { TokenContext } from "../contexts/TokenContext";
 import { FeedContext } from "../contexts/FeedContext";
 import { useSubredditListing } from "../hooks/useInfiniteListing";
-import PostListingScreen from "./PostListingScreen";
+import { PostListingScreen } from "./ListingScreen";
 
 const FeedScreen = () => {
 	const token = useContext(TokenContext);

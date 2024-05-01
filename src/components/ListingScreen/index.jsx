@@ -1,6 +1,7 @@
 import { FlatList, View, StyleSheet } from "react-native";
 import { ActivityIndicator, Surface, Text, useTheme } from "react-native-paper";
-import PostPreview from "../PostPreview";
+import PostPreview from "./PostPreview";
+import CommentPreview from "./CommentPreview";
 
 const styles = StyleSheet.create({
 	container: {
@@ -18,12 +19,13 @@ const styles = StyleSheet.create({
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
-const PostListingScreen = ({
+const ListingScreen = ({
 	isPending,
 	isError,
 	error,
-	posts,
-	fetchMorePosts,
+	isPostListing,
+	content,
+	fetchMore,
 	isFetchingNextPage,
 }) => {
 	const theme = useTheme();
@@ -51,16 +53,22 @@ const PostListingScreen = ({
 				backgroundColor: theme.colors.surfaceVariant,
 			}}
 		>
-			{posts.length === 0 ? (
+			{content.length === 0 ? (
 				<View style={styles.containerCentered}>
 					<Text>There appears to be nothing here</Text>
 				</View>
 			) : (
 				<FlatList
-					data={posts}
-					onEndReached={fetchMorePosts}
+					data={content}
+					onEndReached={fetchMore}
 					ItemSeparatorComponent={ItemSeparator}
-					renderItem={({ item }) => <PostPreview post={item} />}
+					renderItem={({ item }) =>
+						isPostListing ? (
+							<PostPreview post={item} />
+						) : (
+							<CommentPreview comment={item} />
+						)
+					}
 					keyExtractor={(item) => item.id}
 					contentContainerStyle={{
 						paddingVertical: 10,
@@ -80,4 +88,44 @@ const PostListingScreen = ({
 	);
 };
 
-export default PostListingScreen;
+export const PostListingScreen = ({
+	isPending,
+	isError,
+	error,
+	posts,
+	fetchMorePosts,
+	isFetchingNextPage,
+}) => {
+	return (
+		<ListingScreen
+			isPending={isPending}
+			isError={isError}
+			error={error}
+			isPostListing={true}
+			content={posts}
+			fetchMore={fetchMorePosts}
+			isFetchingNextPage={isFetchingNextPage}
+		/>
+	);
+};
+
+export const CommentListingScreen = ({
+	isPending,
+	isError,
+	error,
+	comments,
+	fetchMoreComments,
+	isFetchingNextPage,
+}) => {
+	return (
+		<ListingScreen
+			isPending={isPending}
+			isError={isError}
+			error={error}
+			isPostListing={false}
+			content={comments}
+			fetchMore={fetchMoreComments}
+			isFetchingNextPage={isFetchingNextPage}
+		/>
+	);
+};

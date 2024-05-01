@@ -4,14 +4,14 @@ import { memo, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useContext } from "react";
 
-import { CrossPostContext } from "../../contexts/CrossPostContext";
+import { CrossPostContext } from "../../../contexts/CrossPostContext";
 
 import PostInfo from "./PostInfo";
-import ImageCarousel from "../Media/ImageCarousel";
-import RedditImage from "../Media/RedditImage";
-import RedditVideo from "../Media/RedditVideo";
-import ExternalVideo from "../Media/ExternalVideo";
-import calculateMediaContainerHeight from "../../utils/CalculateMediaContainerHeight";
+import ImageCarousel from "../../Media/ImageCarousel";
+import RedditImage from "../../Media/RedditImage";
+import RedditVideo from "../../Media/RedditVideo";
+import ExternalVideo from "../../Media/ExternalVideo";
+import calculateMediaContainerHeight from "../../../utils/CalculateMediaContainerHeight";
 
 const styles = StyleSheet.create({
 	card: {

@@ -5,7 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import Thumbnail from "./Thumbnail";
 import PostIndicators from "./PostIndicators";
-import Flair from "../common/Flair";
+import Flair from "../../common/Flair";
 import PostOptions from "./PostOptions";
 
 const styles = StyleSheet.create({
