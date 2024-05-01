@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 
 import { TokenContext } from "../contexts/TokenContext";
 import { useSubredditListing } from "../hooks/useInfiniteListing";
-import PostListingScreen from "./common/PostListingScreen";
+import PostListingScreen from "./PostListingScreen";
 import ListingSortMenu from "./SortMenus/ListingSortMenu";
 import truncatedSubredditName from "../utils/TruncatedSubredditName";
 
