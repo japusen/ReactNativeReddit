@@ -8,6 +8,7 @@ import CommentSortMenu from "../SortMenus/CommentsSortMenu";
 import PostHeader from "./PostHeader";
 import CommentThread from "./CommentThread";
 import truncatedSubredditName from "../../utils/TruncatedSubredditName";
+import PartialThreadIndicator from "./PartialThreadIndicator";
 
 const styles = StyleSheet.create({
 	container: {
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
 
 const PostDetailsScreen = ({ route, navigation }) => {
 	const token = useContext(TokenContext);
-	const { postID, subreddit } = route.params;
+	const { postID, subreddit, specificComment } = route.params;
 	const [sort, setSort] = useState("confidence");
 
 	useEffect(() => {
@@ -36,7 +37,8 @@ const PostDetailsScreen = ({ route, navigation }) => {
 		token,
 		postID,
 		subreddit,
-		sort
+		sort,
+		specificComment
 	);
 
 	if (isLoading) {
@@ -60,8 +62,12 @@ const PostDetailsScreen = ({ route, navigation }) => {
 			threadItems={commentThread}
 			linkID={post.fullname}
 			sort={sort}
+			depth={specificComment ? 99 : 1}
 		>
 			<PostHeader post={post} />
+			{specificComment && (
+				<PartialThreadIndicator postID={postID} subreddit={subreddit} />
+			)}
 		</CommentThread>
 	);
 };
