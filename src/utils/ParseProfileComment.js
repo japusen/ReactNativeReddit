@@ -4,6 +4,7 @@ import formatTime from "./FormatTime";
 const parseProfileComment = (comment) => {
 	return {
 		id: comment.id,
+		linkID: comment.link_id.split("_")[1],
 		title: comment.link_title,
 		subreddit: comment.subreddit,
 		author: comment.author,
