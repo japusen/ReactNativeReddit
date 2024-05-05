@@ -16,7 +16,7 @@ const threadWithVisibleProp = (thread, maxDepth) => {
 	});
 };
 
-export const useManageThread = (initialThread, lastVisibleDepth = 1) => {
+export const useManageThread = (initialThread, lastVisibleDepth) => {
 	const [thread, dispatch] = useReducer(
 		commentsReducer,
 		threadWithVisibleProp(initialThread, lastVisibleDepth)

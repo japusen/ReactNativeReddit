@@ -46,11 +46,11 @@ const borderColors = ["blueviolet", "blue", "green", "gold", "orange", "red"];
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
-const CommentThread = ({ threadItems, children, linkID, sort }) => {
+const CommentThread = ({ threadItems, children, linkID, sort, depth }) => {
 	const theme = useTheme();
 
 	const { thread, handleShowReplies, handleHideReplies, handleFetchMore } =
-		useManageThread(threadItems);
+		useManageThread(threadItems, depth);
 
 	return (
 		<FlatList
