@@ -2,7 +2,13 @@ import axios from "axios";
 import parsePost from "../utils/ParsePost";
 import parseCommentTree from "../utils/ParseCommentTree";
 
-export const getPostArticle = async (token, article, subreddit, sort) => {
+export const getPostArticle = async (
+	token,
+	article,
+	subreddit,
+	sort,
+	specificComment
+) => {
 	const endpoint = `https://oauth.reddit.com/r/${subreddit}/comments/${article}`;
 	const config = {
 		headers: {
@@ -14,6 +20,8 @@ export const getPostArticle = async (token, article, subreddit, sort) => {
 			// showmedia: true,
 			// showmore: true,
 			// showtitle: true,
+			comment: specificComment,
+			context: specificComment ? 1 : null,
 			raw_json: 1,
 		},
 	};

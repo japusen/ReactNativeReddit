@@ -1,10 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { getPostArticle } from "../requests/PostArticle";
 
-export const usePostArticle = (token, article, subreddit, sort) => {
+export const usePostArticle = (
+	token,
+	article,
+	subreddit,
+	sort,
+	specificComment
+) => {
 	const { data, error, isLoading, isError } = useQuery({
-		queryKey: ["getArticle", article, sort],
-		queryFn: () => getPostArticle(token, article, subreddit, sort),
+		queryKey: ["getArticle", article, sort, specificComment],
+		queryFn: () =>
+			getPostArticle(token, article, subreddit, sort, specificComment),
 	});
 
 	return {
