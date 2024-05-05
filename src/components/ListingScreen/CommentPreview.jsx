@@ -8,6 +8,16 @@ const styles = StyleSheet.create({
 		padding: 8,
 		overflow: "hidden",
 	},
+	cardContent: { display: "flex", gap: 4 },
+	commentInfo: {
+		display: "flex",
+		flexDirection: "row",
+		gap: 8,
+	},
+	divider: {
+		marginVertical: 4,
+		backgroundColor: theme.colors.secondary,
+	},
 });
 
 const CommentPreview = ({ comment }) => {
@@ -27,31 +37,19 @@ const CommentPreview = ({ comment }) => {
 			<Card
 				style={[styles.card, { backgroundColor: theme.colors.surface }]}
 			>
-				<View style={{ display: "flex", gap: 4 }}>
+				<View style={styles.cardContent}>
 					<Text
 						variant="titleSmall"
 						style={{ color: theme.colors.primary }}
 					>
 						{comment.title}
 					</Text>
-					<View
-						style={{
-							display: "flex",
-							flexDirection: "row",
-							gap: 8,
-						}}
-					>
+					<View style={styles.commentInfo}>
 						<Text>{comment.subreddit}</Text>
 						<Text>{comment.score}</Text>
 						<Text>{comment.time}</Text>
 					</View>
-					<Divider
-						bold
-						style={{
-							marginVertical: 4,
-							backgroundColor: theme.colors.secondary,
-						}}
-					/>
+					<Divider bold style={styles.divider} />
 					<Text selectable variant="bodyLarge">
 						{comment.body}
 					</Text>
