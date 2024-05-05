@@ -16,7 +16,6 @@ const styles = StyleSheet.create({
 	},
 	divider: {
 		marginVertical: 4,
-		backgroundColor: theme.colors.secondary,
 	},
 });
 
@@ -49,7 +48,13 @@ const CommentPreview = ({ comment }) => {
 						<Text>{comment.score}</Text>
 						<Text>{comment.time}</Text>
 					</View>
-					<Divider bold style={styles.divider} />
+					<Divider
+						bold
+						style={{
+							...styles.divider,
+							backgroundColor: theme.colors.secondary,
+						}}
+					/>
 					<Text selectable variant="bodyLarge">
 						{comment.body}
 					</Text>
