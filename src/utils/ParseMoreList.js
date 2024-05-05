@@ -1,4 +1,4 @@
-import formatNumberInThousands from "./FormatNumberInThousands";
+import { formatScore } from "./FormatNumberInThousands";
 import formatTime from "./FormatTime";
 import parseFlair from "./ParseFlair";
 
